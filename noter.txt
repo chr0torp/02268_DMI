@@ -1,0 +1,20 @@
+
+
+
+
+https://www.dmi.dk/friedata/guides-til-frie-data/sadan-bruges-frie-data
+
+
+wind_speed
+06183	Drogden Fyr
+https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?stationId=06183&parameterId=wind_speed&limit=1
+https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?stationId=06183&parameterId=wind_gust_past10min&limit=1
+
+
+vandstand
+
+30357   Drogden Fyr         Østersøen/indre farvande
+20101	Frederikshavn       Skagerrak/Limfjorden
+21009	Hanstholm           Vestkysten
+25149	Esbjerg Havn        vadehavet
+https://opendataapi.dmi.dk/v2/oceanObs/collections/observation/items?stationId=30357&parameterId=sealev_dvr&limit=1

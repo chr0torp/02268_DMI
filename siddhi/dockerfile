@@ -1,0 +1,6 @@
+FROM siddhiio/siddhi-runner-alpine:latest
+
+WORKDIR /apps
+COPY DataDmiApp.siddhi /apps/DataDmiApp.siddhi
+
+ENTRYPOINT ["sh", "-c", "/home/siddhi_user/siddhi-runner/wso2/runner/bin/carbon.sh -Dapps=/apps/DataDmiApp.siddhi"]

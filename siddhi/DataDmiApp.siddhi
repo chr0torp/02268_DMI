@@ -1,0 +1,92 @@
+@App:name("DataDmiApp")
+
+/* -----------------------------
+   INPUT STREAMS
+   ----------------------------- */
+
+@source(
+    type='http',
+    receiver.url="http://0.0.0.0:7071/dmi",
+    @map(type='json')
+)
+define stream WindStream(id string, parameterId string, mean_wind_speed float, wind_gust float);
+
+@source(
+    type='http',
+    receiver.url="http://0.0.0.0:7072/middleman",
+    @map(type='json')
+)
+
+define stream MiddlemanStream(
+    id string,
+    parameterId string,
+    warning string,
+    event string,
+    timestamp string,
+    role string,
+    payload string,
+    error string
+);
+
+/* -----------------------------
+   CAMUNDA COMMAND OUTPUTS
+   ----------------------------- */
+
+@sink(
+    type='http',
+    publisher.url='http://communication:5001/wind_data',
+    method='POST',
+    @map(type='json')
+)
+define stream WindDataInput(id string);
+
+/* -----------------------------
+   LOGGER OUTPUT
+   ----------------------------- */
+
+@sink(
+    type='http',
+    publisher.url='http://logging-service:5010/log',
+    method='POST',
+    @map(type='json')
+)
+define stream Logging(
+    id string,
+    parameterId string,
+    mean_wind_speed float, 
+    wind_gust float
+);
+
+@sink(
+    type='http',
+    publisher.url='http://logging-service:5010/log',
+    method='POST',
+    @map(type='json')
+)
+define stream CallbackLog(
+    id string,
+    parameterId string,
+    warning string,
+    event string,
+    timestamp string,
+    role string,
+    payload string,
+    error string
+);
+
+define stream RoutingError(
+    id string,
+    error string
+);
+
+/* -----------------------------
+   DMI EVENT ROUTING
+   ----------------------------- */
+
+from WindStream[parameterId == "wind_data" and not(id is null)]
+select id, parameterId, mean_wind_speed, wind_gust
+insert into Logging;
+
+from MiddlemanStream
+select id, parameterId, warning, event, timestamp, role, payload, error
+insert into CallbackLog;

@@ -1,0 +1,15 @@
+[
+  {
+    "case_id": "0ad81c4a-a49e-73d9-c049-21a5badf3bcb",
+    "event": "WeatherObserved",
+    "timestamp": "2026-11-15T19:31:34.629753+00:00",
+    "role": "DMI",
+    "error": "",
+    "payload": {
+      "id": "0ad81c4a-a49e-73d9-c049-21a5badf3bcb",
+      "parameterId": "wind_data",
+      "mean_wind_speed": 21.49,
+      "wind_gust": 26.3466
+    }
+  }
+]
