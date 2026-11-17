@@ -18,3 +18,27 @@ vandstand
 21009	Hanstholm           Vestkysten
 25149	Esbjerg Havn        vadehavet
 https://opendataapi.dmi.dk/v2/oceanObs/collections/observation/items?stationId=30357&parameterId=sealev_dvr&limit=1
+
+
+
+
+http://localhost:8081/
+http://localhost:8081/operate
+
+
+
+communication    | [Camunda] deployment attempt 25 failed: ProcessInvalidError(); cause=<AioRpcError of RPC that terminated with:
+communication    | 	status = StatusCode.INVALID_ARGUMENT
+communication    | 	details = "Command 'CREATE' rejected with code 'INVALID_ARGUMENT': Expected to deploy new resources, but encountered the following errors:
+communication    | 'wind.bpmn': - Element: Flow_1gnzc9n
+communication    |     - ERROR: Must have a condition or be default flow
+communication    | - Element: Flow_0uc3bn3
+communication    |     - ERROR: Must have a condition or be default flow
+communication    | "
+communication    | 	debug_error_string = "INVALID_ARGUMENT:Command 'CREATE' rejected with code 'INVALID_ARGUMENT': Expected to deploy new resources, but encountered the following errors:
+communication    | 'wind.bpmn': - Element: Flow_1gnzc9n
+communication    |     - ERROR: Must have a condition or be default flow
+communication    | - Element: Flow_0uc3bn3
+communication    |     - ERROR: Must have a condition or be default flow
+communication    | "
+communication    | >

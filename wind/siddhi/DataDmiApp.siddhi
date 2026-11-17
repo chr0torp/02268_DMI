@@ -38,7 +38,12 @@ define stream MiddlemanStream(
     method='POST',
     @map(type='json')
 )
-define stream WindDataInput(id string);
+define stream WindDataInput(
+    id string,
+    parameterId string,
+    mean_wind_speed float,
+    wind_gust float
+);
 
 /* -----------------------------
    LOGGER OUTPUT
@@ -86,6 +91,10 @@ define stream RoutingError(
 from WindStream[parameterId == "wind_data" and not(id is null)]
 select id, parameterId, mean_wind_speed, wind_gust
 insert into Logging;
+
+from WindStream[parameterId == "wind_data" and not(id is null)]
+select id, parameterId, mean_wind_speed, wind_gust
+insert into WindDataInput;
 
 from MiddlemanStream
 select id, parameterId, warning, event, timestamp, role, payload, error

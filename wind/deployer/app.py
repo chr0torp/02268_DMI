@@ -66,20 +66,25 @@ async def publish_message(name, order_id, variables):
 def receive_wind_data():
     try:
         data = request.get_json(force=True)
+        process_variables = (
+            data.get("event") if isinstance(data.get("event"), dict) else data
+        )
         id = get_id(data)
         callback(id, "WindDataReceived", payload=data)
-        return jsonify({"status": "success"}), 200
+        process_instance_key = run_async(
+            client.run_process("Process_1ove3qc", variables=process_variables)
+        )
+        return jsonify(
+            {"status": "success", "process_instance_key": process_instance_key}
+        ), 200
     except Exception as error:
         print(f"Error processing wind data: {error}")
         return jsonify({"status": "error", "message": str(error)}), 500
 
 
 
-async def wind_warning_task(job: Job):
-    id = job.variables.get("id")
-    parameterId = job.variables.get("parameterId")
-    wind_speed = job.variables.get("mean_wind_speed")
-    wind_gust = job.variables.get("wind_gust")
+async def wind_warning_task(job: Job, id, parameterId, mean_wind_speed, wind_gust):
+    wind_speed = mean_wind_speed
     if wind_speed > 20.8 and wind_speed <= 24.5 and wind_gust > 24.5:
         callback(id, "WindWarning", payload={"parameterId": parameterId, "warning_level": "Category 1", "mean_wind_speed": wind_speed, "wind_gust": wind_gust})
     elif wind_speed > 24.5 and wind_speed <= 32.6:
@@ -96,7 +101,10 @@ async def deploy_and_work():
     channel = grpc.aio.insecure_channel(ZEEBE_ADDRESS)
     client = ZeebeClient(grpc_channel=channel)
     worker = ZeebeWorker(grpc_channel=channel)
-    worker.task(task_type="wind-warning")(wind_warning_task)
+    worker.task(
+        task_type="wind-warning",
+        variables_to_fetch=["id", "parameterId", "mean_wind_speed", "wind_gust"],
+    )(wind_warning_task)
     for attempt in range(1, 31):
         try:
             deployment = await client.deploy_process(BPMN_FILE)
