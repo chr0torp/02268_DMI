@@ -25,7 +25,17 @@ def clean_data(data):
             "value": data['features'][0]['properties']['value'],
             "stationId": data['features'][0]['properties']['stationId']
         }
+    return cleaned_data
 
+def clean_cloudburst_data(data):
+    cleaned_data = {}
+    if "features" in data:
+        cleaned_data = {
+            "id": data['features'][0]['id'],
+            "parameterId": data['features'][0]['properties']['parameterId'],
+            "value": (data['features'][0]['properties']['value'] + data['features'][1]['properties']['value'] + data['features'][2]['properties']['value']),
+            "stationId": data['features'][0]['properties']['stationId']
+        }
     return cleaned_data
 
 
@@ -62,6 +72,20 @@ def get_wind_data():
 
     return merged_data
 
+def get_cloudburst_data():
+    try:
+        url = "https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?stationId=06180&parameterId=precip_past10min&limit=3"
+        status, response_body = recive_event(url)
+        if status != 200:
+            raise Exception(f"Failed to fetch cloudburst data. Status code: {status}")
+        events = json.loads(response_body)
+        cloudburst_data = clean_cloudburst_data(events)
+    except Exception as e:
+        print(f"Error fetching cloudburst data: {e}")
+        return None
+
+    return cloudburst_data
+
 
 
 if __name__ == "__main__":
@@ -79,6 +103,12 @@ if __name__ == "__main__":
     wind_data = get_wind_data()
     if wind_data is not None:
         print(f"wind data: {wind_data}")
+
+    print("Fetching cloudburst data...")
+    cloudburst_data = get_cloudburst_data()
+    if cloudburst_data is not None:
+        print(f"cloudburst data: {cloudburst_data}")
+
 
 
 

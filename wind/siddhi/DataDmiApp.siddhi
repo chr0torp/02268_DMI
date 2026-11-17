@@ -7,9 +7,9 @@
 @source(
     type='http',
     receiver.url="http://0.0.0.0:7071/dmi",
-    @map(type='json')
+    @map(type='json', fail.on.missing.attribute='false')
 )
-define stream WindStream(id string, parameterId string, mean_wind_speed float, wind_gust float);
+define stream Stream(id string, parameterId string, mean_wind_speed float, wind_gust float, rain float);
 
 @source(
     type='http',
@@ -28,12 +28,6 @@ define stream MiddlemanStream(
     error string
 );
 
-@source(
-    type='http',
-    receiver.url="http://0.0.0.0:7073/dmi/response",
-    @map(type='json')
-)
-define stream AuthorityResponseStream(id string, status string);
 
 /* -----------------------------
    CAMUNDA COMMAND OUTPUTS
@@ -54,11 +48,16 @@ define stream WindDataInput(
 
 @sink(
     type='http',
-    publisher.url='http://communication:5001/authority_response',
+    publisher.url='http://communication:5001/rain_data',
     method='POST',
     @map(type='json')
 )
-define stream AuthorityResponseInput(id string, status string);
+define stream RainDataInput(
+    id string,
+    parameterId string,
+    rain float
+);
+
 
 /* -----------------------------
    LOGGER OUTPUT
@@ -74,7 +73,8 @@ define stream Logging(
     id string,
     parameterId string,
     mean_wind_speed float, 
-    wind_gust float
+    wind_gust float,
+    rain float
 );
 
 @sink(
@@ -103,17 +103,17 @@ define stream RoutingError(
    DMI EVENT ROUTING
    ----------------------------- */
 
-from WindStream[parameterId == "wind_data" and not(id is null)]
-select id, parameterId, mean_wind_speed, wind_gust
+from Stream[not(id is null)]
+select id, parameterId, mean_wind_speed, wind_gust, rain
 insert into Logging;
 
-from WindStream[parameterId == "wind_data" and not(id is null)]
+from Stream[parameterId == "wind_data" and not(id is null)]
 select id, parameterId, mean_wind_speed, wind_gust
 insert into WindDataInput;
 
-from AuthorityResponseStream[not(id is null)]
-select id, status
-insert into AuthorityResponseInput;
+from Stream[parameterId == "rain_data" and not(id is null)]
+select id, parameterId, rain
+insert into RainDataInput;
 
 from MiddlemanStream
 select id, parameterId, warning, event, timestamp, role, payload, error

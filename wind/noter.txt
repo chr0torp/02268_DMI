@@ -20,11 +20,19 @@ vandstand
 https://opendataapi.dmi.dk/v2/oceanObs/collections/observation/items?stationId=30357&parameterId=sealev_dvr&limit=1
 
 
+Kastrup Lufthavn
+https://opendataapi.dmi.dk/v2/metObs/collections/observation/items?stationId=06180&parameterId=precip_past10min&limit=3
 
 
 http://localhost:8081/
 http://localhost:8081/operate
 
+
+docker compose down --rmi all -v
+docker compose up --build
+
+docker compose down -v
+docker compose up -d
 
 
 communication    | [Camunda] deployment attempt 25 failed: ProcessInvalidError(); cause=<AioRpcError of RPC that terminated with:

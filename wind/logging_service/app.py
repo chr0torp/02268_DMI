@@ -21,65 +21,35 @@ def utc_now_iso() -> str:
 
 
 def normalize_event_payload(data):
+    print(f"[XES] Normalizing event payload:")
     event_data = data.get("event") if isinstance(data.get("event"), dict) else data
+    print(f"[XES] Normalizing event payload: {event_data}", flush=True)
+    
+    payload = {}
     raw_payload = event_data.get("payload")
+    
     if isinstance(raw_payload, str):
         try:
             payload = json.loads(raw_payload)
         except (TypeError, ValueError):
-            payload = {"raw": raw_payload}
+            pass
     elif isinstance(raw_payload, dict):
         payload = raw_payload.copy()
-    else:
-        payload = {}
 
-    if not isinstance(payload, dict):
-        payload = {"raw": payload}
-    if isinstance(payload.get("event"), dict) and len(payload) == 1:
-        payload = payload["event"]
-
-    is_weather_observation = (
-        isinstance(event_data.get("parameterId"), str)
-        and event_data.get("event") is None
-    )
-    if not payload:
-        payload = {
-            key: event_data[key]
-            for key in (
-                "id",
-                "parameterId",
-                "stationId",
-                "observed",
-                "mean_wind_speed",
-                "wind_gust",
-            )
-            if key in event_data and event_data[key] is not None
-        }
-    for key in ("parameterId", "warning"):
+    for key in ("id", "parameterId", "warning", "mean_wind_speed", "wind_gust", "rain"):
         if event_data.get(key) is not None:
             payload.setdefault(key, event_data[key])
 
     return {
-        "case_id": str(
-            event_data.get("case_id")
-            or event_data.get("stationId")
-            or event_data.get("id")
-            or "UNKNOWN_CASE"
-        ),
-        "event": (
-            event_data.get("event")
-            if isinstance(event_data.get("event"), str)
-            else "WeatherObserved" if is_weather_observation else "unknown"
-        ),
-        "timestamp": str(
-            event_data.get("timestamp")
-            or event_data.get("observed")
-            or utc_now_iso()
-        ),
-        "role": str(event_data.get("role") or ("DMI" if is_weather_observation else "system")),
+        "case_id": str(event_data.get("id")),
+        "event": str(event_data.get("event") or "api"),
+        "timestamp": str(event_data.get("timestamp") or utc_now_iso()),
+        "role": str(event_data.get("role") or "system"),
         "error": str(event_data.get("error") or ""),
         "payload": payload,
     }
+
+
 
 def write_json_store(events):
     with open(EVENT_STORE, "w", encoding="utf-8") as f:
