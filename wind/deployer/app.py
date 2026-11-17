@@ -82,6 +82,23 @@ def receive_wind_data():
         return jsonify({"status": "error", "message": str(error)}), 500
 
 
+@app.post("/authority_response")
+def receive_authority_response():
+    try:
+        data = request.get_json(force=True)
+        correlation_id = get_id(data)
+        if not correlation_id:
+            return jsonify({"status": "error", "message": "Missing id"}), 400
+        message_key = run_async(
+            publish_message("AuthorityResponse", correlation_id, data)
+        )
+        return jsonify(
+            {"status": "success", "message_key": message_key}
+        ), 200
+    except Exception as error:
+        print(f"Error processing authority response: {error}")
+        return jsonify({"status": "error", "message": str(error)}), 500
+
 
 async def wind_warning_task(job: Job, id, parameterId, mean_wind_speed, wind_gust):
     wind_speed = mean_wind_speed
@@ -89,10 +106,8 @@ async def wind_warning_task(job: Job, id, parameterId, mean_wind_speed, wind_gus
         callback(id, "WindWarning", payload={"parameterId": parameterId, "warning_level": "Category 1", "mean_wind_speed": wind_speed, "wind_gust": wind_gust})
     elif wind_speed > 24.5 and wind_speed <= 32.6:
         callback(id, "WindWarning", payload={"parameterId": parameterId, "warning_level": "Category 2", "mean_wind_speed": wind_speed, "wind_gust": wind_gust})
-    elif wind_speed > 32.6:
-        callback(id, "WindWarning", payload={"parameterId": parameterId, "warning_level": "Category 3", "mean_wind_speed": wind_speed, "wind_gust": wind_gust})
     else:
-        callback(id, "WindWarning", payload={"parameterId": parameterId, "warning_level": "No warning", "mean_wind_speed": wind_speed, "wind_gust": wind_gust})
+        callback(id, "WindWarning", payload={"parameterId": parameterId, "warning_level": "Category 3", "mean_wind_speed": wind_speed, "wind_gust": wind_gust})
     await job.set_success_status()
 
 

@@ -28,6 +28,13 @@ define stream MiddlemanStream(
     error string
 );
 
+@source(
+    type='http',
+    receiver.url="http://0.0.0.0:7073/dmi/response",
+    @map(type='json')
+)
+define stream AuthorityResponseStream(id string, status string);
+
 /* -----------------------------
    CAMUNDA COMMAND OUTPUTS
    ----------------------------- */
@@ -44,6 +51,14 @@ define stream WindDataInput(
     mean_wind_speed float,
     wind_gust float
 );
+
+@sink(
+    type='http',
+    publisher.url='http://communication:5001/authority_response',
+    method='POST',
+    @map(type='json')
+)
+define stream AuthorityResponseInput(id string, status string);
 
 /* -----------------------------
    LOGGER OUTPUT
@@ -95,6 +110,10 @@ insert into Logging;
 from WindStream[parameterId == "wind_data" and not(id is null)]
 select id, parameterId, mean_wind_speed, wind_gust
 insert into WindDataInput;
+
+from AuthorityResponseStream[not(id is null)]
+select id, status
+insert into AuthorityResponseInput;
 
 from MiddlemanStream
 select id, parameterId, warning, event, timestamp, role, payload, error

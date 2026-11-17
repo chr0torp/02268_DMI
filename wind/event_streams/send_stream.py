@@ -11,7 +11,11 @@ from urllib.request import Request, urlopen
 
 from fetch_data import get_wind_data
 
-
+test_data = [{'id': '0ad81c4a-a49e-73d9-c049-21a5badf3bcb', 'parameterId': 'wind_data', 'mean_wind_speed': 21.49, 'wind_gust': 26.3466},
+                {'id': 'shfreiw2-a49e-73d9-c049-21a5badf3bcb', 'parameterId': 'wind_data', 'mean_wind_speed': 2.49, 'wind_gust': 2.3466},
+                {'id': '12345678-a49e-73d9-c049-21a5badf3bcb', 'parameterId': 'wind_data', 'mean_wind_speed': 25.49, 'wind_gust': 26.3466},
+                {'id': '66665554-a49e-73d9-c049-21a5badf3bcb', 'parameterId': 'wind_data', 'mean_wind_speed': 33.49, 'wind_gust': 26.3466},
+                {'id': '9r2gd77r-a49e-73d9-c049-21a5badf3bcb', 'parameterId': 'wind_data', 'mean_wind_speed': 21.49, 'wind_gust': 26.3466}]
 
 
 def load_wind_data():
@@ -33,20 +37,72 @@ def send_event(url, body, timeout):
         response_body = response.read().decode("utf-8")
         return response.status, response_body
 
+def send_response(url, id):
+    body = {
+        "id": id,
+        "status": "received",
+    }
+    body = json.dumps(body).encode("utf-8")
+    request = Request(
+            url,
+            data=body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+    with urlopen(request, timeout=10) as response:
+        response_body = response.read().decode("utf-8")
+        return response.status, response_body
+
+
 
 def main():
-    try:
-        wind_data = load_wind_data()
-        wind_data = {'id': '0ad81c4a-a445-73d9-c049-21a5badf3asa', 'parameterId': 'wind_data', 'mean_wind_speed': 2.49, 'wind_gust': 2.3466}
-        print(f"Fetched wind data: {wind_data}")
-        url = "http://localhost:7071/dmi"
-        timeout = 10
-        status, response = send_event(url, wind_data, timeout)
-        print(f"Successfully HTTP {status} {response}")
+    for wind_data in test_data:
+        try:
+            print(f"Fetched wind data: {wind_data}")
+            url = "http://localhost:7071/dmi"
+            timeout = 10
+            status, response = send_event(url, wind_data, timeout)
+            print(f"Successfully HTTP {status} {response}")
 
-    except (HTTPError, URLError, TimeoutError) as error:
-        print(f"Error sending event: {error}")
-        raise SystemExit(1)
+        except (HTTPError, URLError, TimeoutError) as error:
+            print(f"Error sending event: {error}")
+            raise SystemExit(1)
+        time.sleep(10)  
+
+    num = 0
+    for wind_data in test_data:
+        try:
+            print(f"Sending response for wind data: {wind_data}")
+            url = "http://localhost:7073/dmi/response"
+            timeout = 10
+            id = wind_data.get("id")
+            status, response = send_response(url, id)
+            print(f"Successfully sent response HTTP {status} {response}")
+
+        except (HTTPError, URLError, TimeoutError) as error:
+            print(f"Error sending response: {error}")
+            raise SystemExit(1)
+
+        num += 1
+        time.sleep(7*num) 
+
+    
+
+    
+    
+    
+    # try:
+    #     # wind_data = load_wind_data()
+
+    #     print(f"Fetched wind data: {wind_data}")
+    #     url = "http://localhost:7071/dmi"
+    #     timeout = 10
+    #     status, response = send_event(url, wind_data, timeout)
+    #     print(f"Successfully HTTP {status} {response}")
+
+    # except (HTTPError, URLError, TimeoutError) as error:
+    #     print(f"Error sending event: {error}")
+    #     raise SystemExit(1)
     
 
 

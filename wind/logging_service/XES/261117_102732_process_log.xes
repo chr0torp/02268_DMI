@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='utf-8'?>
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+  <extension name="concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+  <extension name="time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+  <extension name="org" prefix="org" uri="http://www.xes-standard.org/org.xesext" />
+  <global scope="trace">
+    <string key="concept:name" value="name" />
+  </global>
+  <global scope="event">
+    <string key="concept:name" value="name" />
+    <date key="time:timestamp" value="2024-01-01T00:00:00.000+00:00" />
+    <string key="org:resource" value="resource" />
+  </global>
+  <classifier name="Event Name" keys="concept:name" />
+  <trace>
+    <string key="concept:name" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:30:02.807012+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:30:02.806879+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-17T10:30:02.990117+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:32:38.899019+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:32:38.898840+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-17T10:32:38.943394+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="0ad81c4a-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:30:07.922035+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="2.49" />
+      <string key="payload:wind_gust" value="2.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:30:07.922075+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="2.49" />
+      <string key="payload:wind_gust" value="2.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:32:48.933622+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="2.49" />
+      <string key="payload:wind_gust" value="2.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:32:48.933933+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="shfreiw2-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="2.49" />
+      <string key="payload:wind_gust" value="2.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:30:12.975733+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="25.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:30:12.978767+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="25.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-17T10:30:13.015405+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 2" />
+      <string key="payload:mean_wind_speed" value="25.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="Category 2" />
+    </event>
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:32:58.995868+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="25.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:32:58.995847+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="25.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-17T10:32:59.019752+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="12345678-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 2" />
+      <string key="payload:mean_wind_speed" value="25.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="Category 2" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:30:17.994139+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="33.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:30:18.001576+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="33.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-17T10:30:18.041537+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 3" />
+      <string key="payload:mean_wind_speed" value="33.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="Category 3" />
+    </event>
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:33:09.031685+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="33.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:33:09.041870+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="66665554-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="33.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:30:23.036741+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:30:23.051393+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-17T10:30:23.089662+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+    <event>
+      <string key="concept:name" value="WeatherObserved" />
+      <date key="time:timestamp" value="2026-11-17T10:33:19.070948+00:00" />
+      <string key="org:resource" value="DMI" />
+      <string key="case_id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-17T10:33:19.070947+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="undefined" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-17T10:33:19.096887+00:00" />
+      <string key="org:resource" value="camunda" />
+      <string key="case_id" value="9r2gd77r-a49e-73d9-c049-21a5badf3bcb" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:mean_wind_speed" value="21.49" />
+      <string key="payload:wind_gust" value="26.3466" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+  </trace>
+</log>

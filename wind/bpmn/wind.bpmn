@@ -104,11 +104,11 @@
     <bpmn:sequenceFlow id="Flow_0uc3bn3" sourceRef="Gateway_07sxghr" targetRef="Event_1syxqts" />
     <bpmn:sequenceFlow id="Flow_1gnzc9n" sourceRef="Gateway_07sxghr" targetRef="Event_1i81n5l" />
     <bpmn:sequenceFlow id="Flow_1tag32p" sourceRef="Event_1i81n5l" targetRef="Gateway_0naw1or" />
-    <bpmn:intermediateCatchEvent id="Event_1i81n5l" name="30 sek">
+    <bpmn:intermediateCatchEvent id="Event_1i81n5l" name="30 min">
       <bpmn:incoming>Flow_1gnzc9n</bpmn:incoming>
       <bpmn:outgoing>Flow_1tag32p</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_04p6cw4">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="Event_1syxqts">
