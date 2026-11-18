@@ -11,9 +11,9 @@
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmn:collaboration id="Collaboration_0umjxu1">
-    <bpmn:participant id="Participant_1vs1i8g" name="DMI" processRef="Process_1ove3qc" />
+    <bpmn:participant id="Participant_1vs1i8g" name="DMI" processRef="Process_wind" />
   </bpmn:collaboration>
-  <bpmn:process id="Process_1ove3qc" isExecutable="true">
+  <bpmn:process id="Process_wind" isExecutable="true">
     <bpmn:task id="Activity_0ghs9o8" name="Check mean wind and wind gust">
       <bpmn:incoming>Flow_1lriz6y</bpmn:incoming>
       <bpmn:outgoing>Flow_1fckykh</bpmn:outgoing>

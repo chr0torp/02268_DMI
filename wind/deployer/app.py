@@ -10,7 +10,8 @@ from flask import Flask, jsonify, request
 from pyzeebe import Job, ZeebeClient, ZeebeWorker
 
 ZEEBE_ADDRESS = os.getenv("ZEEBE_ADDRESS", "zeebe:26500")
-BPMN_FILE = os.getenv("BPMN_FILE", "/bpmn/wind.bpmn")
+BPMN_FILE1 = os.getenv("BPMN_FILE1", "/bpmn/wind.bpmn")
+BPMN_FILE2 = os.getenv("BPMN_FILE2", "/bpmn/cloudburst.bpmn")
 SIDDHI_CALLBACK_URL = os.getenv("SIDDHI_CALLBACK_URL", "http://siddhi:7072/middleman")
 
 
@@ -72,13 +73,35 @@ def receive_wind_data():
         id = get_id(data)
         callback(id, "WindDataReceived", payload=data)
         process_instance_key = run_async(
-            client.run_process("Process_1ove3qc", variables=process_variables)
+            client.run_process("Process_wind", variables=process_variables)
         )
         return jsonify(
             {"status": "success", "process_instance_key": process_instance_key}
         ), 200
     except Exception as error:
         print(f"Error processing wind data: {error}")
+        return jsonify({"status": "error", "message": str(error)}), 500
+
+
+@app.post("/cloudburst_data")
+def receive_cloudburst_data():
+    try:
+        data = request.get_json(force=True)
+        process_variables = (
+            data.get("event") if isinstance(data.get("event"), dict) else data
+        )
+        if "rain" in process_variables and "value" not in process_variables:
+            process_variables["value"] = process_variables["rain"]
+        id = get_id(data)
+        callback(id, "CloudburstDataReceived", payload=data)
+        process_instance_key = run_async(
+            client.run_process("Process_cloudburst", variables=process_variables)
+        )
+        return jsonify(
+            {"status": "success", "process_instance_key": process_instance_key}
+        ), 200
+    except Exception as error:
+        print(f"Error processing cloudburst data: {error}")
         return jsonify({"status": "error", "message": str(error)}), 500
 
 
@@ -99,8 +122,8 @@ async def deploy_and_work():
     )(warning_complete)
     for attempt in range(1, 31):
         try:
-            deployment = await client.deploy_process(BPMN_FILE)
-            print(f"[Camunda] BPMN deployed: {deployment}", flush=True)
+            deployment = await client.deploy_process(BPMN_FILE1, BPMN_FILE2)
+            print(f"[Camunda] BPMNs deployed: {deployment}", flush=True)
             break
         except Exception as error:
             cause = getattr(error, "__cause__", None)
@@ -112,6 +135,7 @@ async def deploy_and_work():
             if attempt == 30:
                 raise
             await asyncio.sleep(2)
+    
     await worker.work()
 
 

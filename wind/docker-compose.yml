@@ -6,6 +6,9 @@ services:
       - "5001:5001"
     volumes:
       - ./bpmn:/bpmn
+    environment:
+      BPMN_FILE1: /bpmn/wind.bpmn
+      BPMN_FILE2: /bpmn/cloudburst.bpmn
     depends_on:
       - zeebe
       - siddhi

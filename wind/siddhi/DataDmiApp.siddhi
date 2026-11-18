@@ -9,7 +9,7 @@
     receiver.url="http://0.0.0.0:7071/dmi",
     @map(type='json', fail.on.missing.attribute='false')
 )
-define stream Stream(id string, parameterId string, mean_wind_speed float, wind_gust float, rain float);
+define stream Stream(id string, parameterId string, mean_wind_speed float, wind_gust float, rain float, stationId string);
 
 @source(
     type='http',
@@ -48,14 +48,15 @@ define stream WindDataInput(
 
 @sink(
     type='http',
-    publisher.url='http://communication:5001/rain_data',
+    publisher.url='http://communication:5001/cloudburst_data',
     method='POST',
     @map(type='json')
 )
-define stream RainDataInput(
+define stream CloudBurstDataInput(
     id string,
     parameterId string,
-    rain float
+    rain float,
+    stationId string  
 );
 
 
@@ -111,9 +112,9 @@ from Stream[parameterId == "wind_data" and not(id is null)]
 select id, parameterId, mean_wind_speed, wind_gust
 insert into WindDataInput;
 
-from Stream[parameterId == "rain_data" and not(id is null)]
-select id, parameterId, rain
-insert into RainDataInput;
+from Stream[(parameterId == "cloudburst_data" or parameterId == "precip_past10min") and not(id is null)]
+select id, parameterId, rain, stationId
+insert into CloudBurstDataInput;
 
 from MiddlemanStream
 select id, parameterId, warning, event, timestamp, role, payload, error
