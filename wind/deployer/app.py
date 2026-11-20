@@ -12,6 +12,8 @@ from pyzeebe import Job, ZeebeClient, ZeebeWorker
 ZEEBE_ADDRESS = os.getenv("ZEEBE_ADDRESS", "zeebe:26500")
 BPMN_FILE1 = os.getenv("BPMN_FILE1", "/bpmn/wind.bpmn")
 BPMN_FILE2 = os.getenv("BPMN_FILE2", "/bpmn/cloudburst.bpmn")
+BPMN_FILE3 = os.getenv("BPMN_FILE3", "/bpmn/snow.bpmn")
+BPMN_FILE4 = os.getenv("BPMN_FILE4", "/bpmn/waterlevel.bpmn")
 SIDDHI_CALLBACK_URL = os.getenv("SIDDHI_CALLBACK_URL", "http://siddhi:7072/middleman")
 
 
@@ -42,7 +44,6 @@ def callback(id, event, payload=None, error=""):
         "warning": get_warning_level(payload),
         "event": event,
         "timestamp": now_iso(),
-        "role": "camunda",
         "payload": json.dumps(payload or {}),
         "error": error,
     }
@@ -105,9 +106,64 @@ def receive_cloudburst_data():
         return jsonify({"status": "error", "message": str(error)}), 500
 
 
+@app.post("/snow_data")
+def receive_snow_data():
+    try:
+        data = request.get_json(force=True)
+        process_variables = (
+            data.get("event") if isinstance(data.get("event"), dict) else data
+        )
+        if "snow" in process_variables and "value" not in process_variables:
+            process_variables["value"] = process_variables["snow"]
+        id = get_id(data)
+        callback(id, "SnowDataReceived", payload=data)
+        process_instance_key = run_async(
+            client.run_process("Process_Snow", variables=process_variables)
+        )
+        return jsonify(
+            {"status": "success", "process_instance_key": process_instance_key}
+        ), 200
+    except Exception as error:
+        print(f"Error processing snow data: {error}")
+        return jsonify({"status": "error", "message": str(error)}), 500
+
+@app.post("/waterlevel_data")
+def receive_waterlevel_data():
+    try:
+        data = request.get_json(force=True)
+        process_variables = (
+            data.get("event") if isinstance(data.get("event"), dict) else data
+        )
+        if "waterlevel" in process_variables and "water_level" not in process_variables:
+            process_variables["water_level"] = process_variables["waterlevel"]
+        id = get_id(data)
+        callback(id, "WaterLevelDataReceived", payload=data)
+        process_instance_key = run_async(
+            client.run_process("Process_waterlevel", variables=process_variables)
+        )
+        return jsonify(
+            {"status": "success", "process_instance_key": process_instance_key}
+        ), 200
+    except Exception as error:
+        print(f"Error processing water level data: {error}")
+        return jsonify({"status": "error", "message": str(error)}), 500
+
+
 
 async def warning_complete(job: Job, id, parameterId, warning_level="Unknown"):
-    callback(id, "WindWarningComplete", payload={"parameterId": parameterId, "warning_level": warning_level})
+    
+    if parameterId == "wind_data":
+        warning = "WindWarning"
+    elif parameterId == "cloudburst_data":
+        warning = "CloudburstWarning"
+    elif parameterId == "snow_data":
+        warning = "SnowWarning"
+    elif parameterId == "waterlevel_data":
+        warning = "WaterLevelWarning"
+
+    else: 
+        warning = f"UnknownWarning -- parameterId: {parameterId}"
+    callback(id, warning, payload={"parameterId": parameterId, "warning_level": warning_level})
     await job.set_success_status()
 
 
@@ -122,7 +178,7 @@ async def deploy_and_work():
     )(warning_complete)
     for attempt in range(1, 31):
         try:
-            deployment = await client.deploy_process(BPMN_FILE1, BPMN_FILE2)
+            deployment = await client.deploy_process(BPMN_FILE1, BPMN_FILE2, BPMN_FILE3, BPMN_FILE4)
             print(f"[Camunda] BPMNs deployed: {deployment}", flush=True)
             break
         except Exception as error:

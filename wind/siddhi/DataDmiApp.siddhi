@@ -9,7 +9,7 @@
     receiver.url="http://0.0.0.0:7071/dmi",
     @map(type='json', fail.on.missing.attribute='false')
 )
-define stream Stream(id string, parameterId string, mean_wind_speed float, wind_gust float, rain float, stationId string);
+define stream Stream(id string, parameterId string, mean_wind_speed float, wind_gust float, rain float, stationId string, snow float, area string, waterlevel float);
 
 @source(
     type='http',
@@ -23,7 +23,6 @@ define stream MiddlemanStream(
     warning string,
     event string,
     timestamp string,
-    role string,
     payload string,
     error string
 );
@@ -59,6 +58,33 @@ define stream CloudBurstDataInput(
     stationId string  
 );
 
+@sink(
+    type='http',
+    publisher.url='http://communication:5001/snow_data',
+    method='POST',
+    @map(type='json')
+)
+define stream SnowDataInput(
+    id string,
+    parameterId string,
+    snow float,
+    stationId string  
+);
+
+@sink(
+    type='http',
+    publisher.url='http://communication:5001/waterlevel_data',
+    method='POST',
+    @map(type='json')
+)
+define stream WaterlevelDataInput(
+    id string,
+    parameterId string,
+    waterlevel float,
+    area string,
+    stationId string 
+);
+
 
 /* -----------------------------
    LOGGER OUTPUT
@@ -72,10 +98,14 @@ define stream CloudBurstDataInput(
 )
 define stream Logging(
     id string,
+    stationId string,
     parameterId string,
     mean_wind_speed float, 
     wind_gust float,
-    rain float
+    rain float,
+    snow float,
+    waterlevel float,
+    area string
 );
 
 @sink(
@@ -90,7 +120,6 @@ define stream CallbackLog(
     warning string,
     event string,
     timestamp string,
-    role string,
     payload string,
     error string
 );
@@ -105,17 +134,25 @@ define stream RoutingError(
    ----------------------------- */
 
 from Stream[not(id is null)]
-select id, parameterId, mean_wind_speed, wind_gust, rain
+select id, stationId, parameterId, mean_wind_speed, wind_gust, rain, snow, waterlevel, area
 insert into Logging;
 
 from Stream[parameterId == "wind_data" and not(id is null)]
 select id, parameterId, mean_wind_speed, wind_gust
 insert into WindDataInput;
 
-from Stream[(parameterId == "cloudburst_data" or parameterId == "precip_past10min") and not(id is null)]
+from Stream[parameterId == "cloudburst_data" and not(id is null)]
 select id, parameterId, rain, stationId
 insert into CloudBurstDataInput;
 
+from Stream[parameterId == "snow_data" and not(id is null)]
+select id, parameterId, snow, stationId
+insert into SnowDataInput;
+
+from Stream[parameterId == "waterlevel_data" and not(id is null)]
+select id, parameterId, waterlevel, area, stationId
+insert into WaterlevelDataInput;
+
 from MiddlemanStream
-select id, parameterId, warning, event, timestamp, role, payload, error
+select id, parameterId, warning, event, timestamp, payload, error
 insert into CallbackLog;

@@ -9,6 +9,8 @@ services:
     environment:
       BPMN_FILE1: /bpmn/wind.bpmn
       BPMN_FILE2: /bpmn/cloudburst.bpmn
+      BPMN_FILE3: /bpmn/snow.bpmn
+      BPMN_FILE4: /bpmn/waterlevel.bpmn
     depends_on:
       - zeebe
       - siddhi

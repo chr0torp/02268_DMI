@@ -7,13 +7,19 @@ import xml.etree.ElementTree as ET
 app = Flask(__name__)
 
 LOG_DIR = Path("/logs")
+LOG_DIR_WARN = Path("/logs/warnings")
 XES_DIR = Path("/XES")
+XES_DIR_WARN = Path("/XES/warnings")
 LOG_DIR.mkdir(parents=True, exist_ok=True)
+LOG_DIR_WARN.mkdir(parents=True, exist_ok=True)
 XES_DIR.mkdir(parents=True, exist_ok=True)
+XES_DIR_WARN.mkdir(parents=True, exist_ok=True)
 
 RUN_ID = datetime.now(timezone.utc).strftime("%y%m%d_%H%M%S")
 EVENT_STORE = LOG_DIR / f"{RUN_ID}_events.json"
+EVENT_STORE_WARN = LOG_DIR_WARN / f"{RUN_ID}_warnings.json"
 XES_FILE = XES_DIR / f"{RUN_ID}_process_log.xes"
+XES_FILE_WARN = XES_DIR_WARN / f"{RUN_ID}_warnings_log.xes"
 
 
 def utc_now_iso() -> str:
@@ -36,27 +42,28 @@ def normalize_event_payload(data):
     elif isinstance(raw_payload, dict):
         payload = raw_payload.copy()
 
-    for key in ("id", "parameterId", "warning", "mean_wind_speed", "wind_gust", "rain"):
-        if event_data.get(key) is not None:
+    for key in ("id", "parameterId", "warning", "mean_wind_speed", "wind_gust", "rain", "snow", "waterlevel", "stationId", "area"):
+        value = event_data.get(key)
+        if value is not None and value != "undefined":
             payload.setdefault(key, event_data[key])
+
 
     return {
         "case_id": str(event_data.get("id")),
         "event": str(event_data.get("event") or "api"),
         "timestamp": str(event_data.get("timestamp") or utc_now_iso()),
-        "role": str(event_data.get("role") or "system"),
         "error": str(event_data.get("error") or ""),
         "payload": payload,
     }
 
 
 
-def write_json_store(events):
-    with open(EVENT_STORE, "w", encoding="utf-8") as f:
+def write_json_store(events, path):
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(events, f, indent=2)
 
 
-def build_xes(events):
+def build_xes(events, xes_file):
     root = ET.Element(
         "log",
         {
@@ -143,7 +150,27 @@ def build_xes(events):
 
     ET.indent(root)
     tree = ET.ElementTree(root)
-    tree.write(XES_FILE, encoding="utf-8", xml_declaration=True)
+    tree.write(xes_file, encoding="utf-8", xml_declaration=True)
+
+
+
+
+def append_event(event, path, path_xes):
+    try:
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                events = json.load(f)
+        else:
+            events = []
+    except (json.JSONDecodeError, OSError):
+        events = []
+
+    events.append(event)
+    write_json_store(events,path)
+    build_xes(events,path_xes)
+
+    print(f"[XES] Logged event={event['event']} case_id={event['case_id']} ts={event['timestamp']}", flush=True)
+    return jsonify({"status": "logged", "xes_file": str(XES_FILE)}), 200
 
 
 @app.route("/log", methods=["POST"])
@@ -152,24 +179,16 @@ def log_event():
     if not data:
         return jsonify({"status": "invalid", "message": "No JSON payload received"}), 400
 
+
     event = normalize_event_payload(data)
 
-    try:
-        if EVENT_STORE.exists():
-            with open(EVENT_STORE, "r", encoding="utf-8") as f:
-                events = json.load(f)
-        else:
-            events = []
-    except (json.JSONDecodeError, OSError):
-        events = []
+    warning_event = event.get("event") in ("WindWarning", "CloudburstWarning", "SnowWarning", "WaterLevelWarning")
 
-    events.append(event)
-    write_json_store(events)
-    build_xes(events)
+    if warning_event:
+        append_event(event, EVENT_STORE_WARN, XES_FILE_WARN)
 
-    print(f"[XES] Logged event={event['event']} case_id={event['case_id']} ts={event['timestamp']}", flush=True)
-    return jsonify({"status": "logged", "xes_file": str(XES_FILE)}), 200
-
+    append_event(event, EVENT_STORE, XES_FILE)
+    return jsonify({"status": "logged"}), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5010)
