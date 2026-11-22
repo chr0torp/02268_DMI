@@ -151,7 +151,6 @@ def receive_waterlevel_data():
 
 
 async def warning_complete(job: Job, id, parameterId, warning_level="Unknown"):
-    
     if parameterId == "wind_data":
         warning = "WindWarning"
     elif parameterId == "cloudburst_data":
@@ -160,25 +159,32 @@ async def warning_complete(job: Job, id, parameterId, warning_level="Unknown"):
         warning = "SnowWarning"
     elif parameterId == "waterlevel_data":
         warning = "WaterLevelWarning"
-
-    else: 
+    else:
         warning = f"UnknownWarning -- parameterId: {parameterId}"
-    callback(id, warning, payload={"parameterId": parameterId, "warning_level": warning_level})
-    await job.set_success_status()
+
+    await asyncio.to_thread(
+        callback,
+        id,
+        warning,
+        payload={"parameterId": parameterId, "warning_level": warning_level},
+    )
 
 
 async def deploy_and_work():
     global client, worker
-    channel = grpc.aio.insecure_channel(ZEEBE_ADDRESS)
-    client = ZeebeClient(grpc_channel=channel)
-    worker = ZeebeWorker(grpc_channel=channel)
-    worker.task(
-        task_type="send-warning-internal",
-        variables_to_fetch=["id", "parameterId", "warning_level"],
-    )(warning_complete)
-    for attempt in range(1, 31):
+    for attempt in range(1, 46):
         try:
-            deployment = await client.deploy_process(BPMN_FILE1, BPMN_FILE2, BPMN_FILE3, BPMN_FILE4)
+            channel = grpc.aio.insecure_channel(ZEEBE_ADDRESS)
+            client = ZeebeClient(grpc_channel=channel)
+            worker = ZeebeWorker(grpc_channel=channel)
+            worker.task(
+                task_type="send-warning-internal",
+                variables_to_fetch=["id", "parameterId", "warning_level"],
+            )(warning_complete)
+
+            deployment = await client.deploy_process(
+                BPMN_FILE1, BPMN_FILE2, BPMN_FILE3, BPMN_FILE4
+            )
             print(f"[Camunda] BPMNs deployed: {deployment}", flush=True)
             break
         except Exception as error:
@@ -188,12 +194,11 @@ async def deploy_and_work():
                 f"{error!r}; cause={cause!r}",
                 flush=True,
             )
-            if attempt == 30:
+            if attempt == 45:
                 raise
             await asyncio.sleep(2)
-    
-    await worker.work()
 
+    await worker.work()
 
 def serve_http():
     app.run(host="0.0.0.0", port=5001, threaded=True)
