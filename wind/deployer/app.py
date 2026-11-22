@@ -14,6 +14,7 @@ BPMN_FILE1 = os.getenv("BPMN_FILE1", "/bpmn/wind.bpmn")
 BPMN_FILE2 = os.getenv("BPMN_FILE2", "/bpmn/cloudburst.bpmn")
 BPMN_FILE3 = os.getenv("BPMN_FILE3", "/bpmn/snow.bpmn")
 BPMN_FILE4 = os.getenv("BPMN_FILE4", "/bpmn/waterlevel.bpmn")
+BPMN_FILE5 = os.getenv("BPMN_FILE5", "/bpmn/authority_warning.bpmn")
 SIDDHI_CALLBACK_URL = os.getenv("SIDDHI_CALLBACK_URL", "http://siddhi:7072/middleman")
 
 
@@ -149,6 +150,85 @@ def receive_waterlevel_data():
         return jsonify({"status": "error", "message": str(error)}), 500
 
 
+################# AUTHORITY WARNINGS #########################
+
+def format_warning_category(severity: int) -> str:
+    return f"Category {severity}" if severity > 0 else "None"
+
+
+@app.post("/authority_warning")
+def receive_authority_warning():
+    try:
+        data = request.get_json(force=True)
+        payload = data.get("event") if isinstance(data.get("event"), dict) else data
+        event_id = get_id(data)
+        station_id = str(payload["stationId"])
+        severity = int(payload["severity"])
+        variables = {
+            **payload,
+            "stationId": station_id,
+            "severity": severity,
+            "prev_severity": severity,
+            "warning_level": format_warning_category(severity),
+        }
+        callback(event_id, "AuthorityWeatherEventReceived", payload=variables)
+        run_async(publish_message("msg_weather_event", station_id, variables))
+        return jsonify({"status": "success", "stationId": station_id, "severity": severity}), 200
+    except Exception as error:
+        print(f"Error starting authority warning: {error}", flush=True)
+        return jsonify({"status": "error", "message": str(error)}), 500
+
+
+@app.post("/authority_warning_update")
+def receive_authority_warning_update():
+    try:
+        data = request.get_json(force=True)
+        payload = data.get("event") if isinstance(data.get("event"), dict) else data
+        event_id = get_id(data)
+        station_id = str(payload["stationId"])
+        severity = int(payload["severity"])
+        variables = {
+            **payload,
+            "stationId": station_id,
+            "severity": severity,
+            "warning_level": format_warning_category(severity),
+        }
+        callback(event_id, "AuthorityWeatherUpdateReceived", payload=variables)
+        run_async(publish_message("msg_weather_update", station_id, variables))
+        return jsonify({"status": "success", "stationId": station_id, "severity": severity}), 200
+    except Exception as error:
+        print(f"Error updating authority warning: {error}", flush=True)
+        return jsonify({"status": "error", "message": str(error)}), 500
+
+async def notify_authority_warning(job: Job, id, parameterId, stationId, severity):
+    category = format_warning_category(int(severity))
+    await asyncio.to_thread(
+        callback,
+        id,
+        "AuthorityWarningNotified",
+        payload={
+            "parameterId": parameterId,
+            "stationId": stationId,
+            "severity": severity,
+            "warning_level": category,
+        },
+    )
+    return {"prev_severity": int(severity), "warning_level": category}
+
+
+async def notify_authority_dewarning(job: Job, id, parameterId, stationId, severity):
+    await asyncio.to_thread(
+        callback,
+        id,
+        "AuthorityDewarningNotified",
+        payload={
+            "parameterId": parameterId,
+            "stationId": stationId,
+            "severity": int(severity),
+            "warning_level": "None",
+        },
+    )
+    return {"warning_level": "None"}
 
 async def warning_complete(job: Job, id, parameterId, warning_level="Unknown"):
     if parameterId == "wind_data":
@@ -181,9 +261,18 @@ async def deploy_and_work():
                 task_type="send-warning-internal",
                 variables_to_fetch=["id", "parameterId", "warning_level"],
             )(warning_complete)
+            worker.task(
+                task_type="notify-authority-warning",
+                variables_to_fetch=["id", "parameterId", "stationId", "severity"],
+            )(notify_authority_warning)
+
+            worker.task(
+                task_type="notify-authority-dewarning",
+                variables_to_fetch=["id", "parameterId", "stationId", "severity"],
+            )(notify_authority_dewarning)
 
             deployment = await client.deploy_process(
-                BPMN_FILE1, BPMN_FILE2, BPMN_FILE3, BPMN_FILE4
+                BPMN_FILE1, BPMN_FILE2, BPMN_FILE3, BPMN_FILE4, BPMN_FILE5
             )
             print(f"[Camunda] BPMNs deployed: {deployment}", flush=True)
             break

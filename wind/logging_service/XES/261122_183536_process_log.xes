@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='utf-8'?>
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+  <extension name="concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+  <extension name="time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+  <extension name="org" prefix="org" uri="http://www.xes-standard.org/org.xesext" />
+  <global scope="trace">
+    <string key="concept:name" value="name" />
+  </global>
+  <global scope="event">
+    <string key="concept:name" value="name" />
+    <date key="time:timestamp" value="2024-01-01T00:00:00.000+00:00" />
+    <string key="org:resource" value="resource" />
+  </global>
+  <classifier name="Event Name" keys="concept:name" />
+  <trace>
+    <string key="concept:name" value="test-w0" />
+    <event>
+      <string key="concept:name" value="api" />
+      <date key="time:timestamp" value="2026-11-22T18:38:03.180315+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w0" />
+      <string key="payload:id" value="test-w0" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="5.0" />
+      <string key="payload:wind_gust" value="7.0" />
+      <string key="payload:stationId" value="06183" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-22T18:38:03.176485+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w0" />
+      <string key="payload:event" value="{'id': 'test-w0', 'parameterId': 'wind_data', 'mean_wind_speed': 5.0, 'wind_gust': 7.0}" />
+      <string key="payload:id" value="test-w0" />
+      <string key="payload:parameterId" value="wind_data" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="test-w1" />
+    <event>
+      <string key="concept:name" value="api" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.144219+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w1" />
+      <string key="payload:id" value="test-w1" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="21.5" />
+      <string key="payload:wind_gust" value="26.3" />
+      <string key="payload:stationId" value="06183" />
+    </event>
+    <event>
+      <string key="concept:name" value="AuthorityWeatherUpdateReceived" />
+      <date key="time:timestamp" value="2026-11-22T18:38:03.882579+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w1" />
+      <string key="payload:id" value="test-w1" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:stationId" value="06183" />
+      <string key="payload:severity" value="1" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+    <event>
+      <string key="concept:name" value="AuthorityWeatherEventReceived" />
+      <date key="time:timestamp" value="2026-11-22T18:38:03.872471+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w1" />
+      <string key="payload:id" value="test-w1" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:stationId" value="06183" />
+      <string key="payload:severity" value="1" />
+      <string key="payload:prev_severity" value="1" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.252514+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w1" />
+      <string key="payload:event" value="{'id': 'test-w1', 'parameterId': 'wind_data', 'mean_wind_speed': 21.5, 'wind_gust': 26.3}" />
+      <string key="payload:id" value="test-w1" />
+      <string key="payload:parameterId" value="wind_data" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.599596+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w1" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:id" value="test-w1" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+    <event>
+      <string key="concept:name" value="AuthorityWarningNotified" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.476579+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w1" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:stationId" value="06183" />
+      <string key="payload:severity" value="1" />
+      <string key="payload:warning_level" value="Category 1" />
+      <string key="payload:id" value="test-w1" />
+      <string key="payload:warning" value="Category 1" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="test-w2" />
+    <event>
+      <string key="concept:name" value="api" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.690403+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w2" />
+      <string key="payload:id" value="test-w2" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="33.5" />
+      <string key="payload:wind_gust" value="39.0" />
+      <string key="payload:stationId" value="06183" />
+    </event>
+    <event>
+      <string key="concept:name" value="AuthorityWeatherUpdateReceived" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.659756+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w2" />
+      <string key="payload:id" value="test-w2" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:stationId" value="06183" />
+      <string key="payload:severity" value="3" />
+      <string key="payload:warning_level" value="Category 3" />
+      <string key="payload:warning" value="Category 3" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindDataReceived" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.764608+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w2" />
+      <string key="payload:event" value="{'id': 'test-w2', 'parameterId': 'wind_data', 'mean_wind_speed': 33.5, 'wind_gust': 39.0}" />
+      <string key="payload:id" value="test-w2" />
+      <string key="payload:parameterId" value="wind_data" />
+    </event>
+    <event>
+      <string key="concept:name" value="AuthorityWarningNotified" />
+      <date key="time:timestamp" value="2026-11-22T18:38:05.311930+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w2" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:stationId" value="06183" />
+      <string key="payload:severity" value="3" />
+      <string key="payload:warning_level" value="Category 3" />
+      <string key="payload:id" value="test-w2" />
+      <string key="payload:warning" value="Category 3" />
+    </event>
+    <event>
+      <string key="concept:name" value="WindWarning" />
+      <date key="time:timestamp" value="2026-11-22T18:38:05.424606+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w2" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:warning_level" value="Category 3" />
+      <string key="payload:id" value="test-w2" />
+      <string key="payload:warning" value="Category 3" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="test-w3" />
+    <event>
+      <string key="concept:name" value="api" />
+      <date key="time:timestamp" value="2026-11-22T18:38:05.116046+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w3" />
+      <string key="payload:id" value="test-w3" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:mean_wind_speed" value="4.0" />
+      <string key="payload:wind_gust" value="6.0" />
+      <string key="payload:stationId" value="06183" />
+    </event>
+    <event>
+      <string key="concept:name" value="AuthorityWeatherUpdateReceived" />
+      <date key="time:timestamp" value="2026-11-22T18:38:04.976488+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w3" />
+      <string key="payload:id" value="test-w3" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:stationId" value="06183" />
+      <string key="payload:severity" value="0" />
+      <string key="payload:warning_level" value="None" />
+      <string key="payload:warning" value="None" />
+    </event>
+    <event>
+      <string key="concept:name" value="AuthorityDewarningNotified" />
+      <date key="time:timestamp" value="2026-11-22T18:38:05.671382+00:00" />
+      <string key="org:resource" value="system" />
+      <string key="case_id" value="test-w3" />
+      <string key="payload:parameterId" value="wind_data" />
+      <string key="payload:stationId" value="06183" />
+      <string key="payload:severity" value="0" />
+      <string key="payload:warning_level" value="None" />
+      <string key="payload:id" value="test-w3" />
+      <string key="payload:warning" value="None" />
+    </event>
+  </trace>
+</log>

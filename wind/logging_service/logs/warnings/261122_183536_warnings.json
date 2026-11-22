@@ -1,0 +1,26 @@
+[
+  {
+    "case_id": "test-w1",
+    "event": "WindWarning",
+    "timestamp": "2026-11-22T18:38:04.599596+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "warning_level": "Category 1",
+      "id": "test-w1",
+      "warning": "Category 1"
+    }
+  },
+  {
+    "case_id": "test-w2",
+    "event": "WindWarning",
+    "timestamp": "2026-11-22T18:38:05.424606+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "warning_level": "Category 3",
+      "id": "test-w2",
+      "warning": "Category 3"
+    }
+  }
+]

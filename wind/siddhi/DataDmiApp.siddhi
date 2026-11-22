@@ -130,6 +130,90 @@ define stream RoutingError(
 );
 
 /* -----------------------------
+   AUTHORITY WARNING SINKS & STATE
+   ----------------------------- */
+
+@sink(
+    type='http',
+    publisher.url='http://communication:5001/authority_warning',
+    method='POST',
+    @map(type='json')
+)
+define stream AuthorityWarningInput(
+    id string,
+    parameterId string,
+    stationId string,
+    severity int
+);
+
+@sink(
+    type='http',
+    publisher.url='http://communication:5001/authority_warning_update',
+    method='POST',
+    @map(type='json')
+)
+define stream AuthorityWarningUpdateInput(
+    id string,
+    parameterId string,
+    stationId string,
+    severity int
+);
+
+@primaryKey('stationId')
+define table ActiveWarningsTable(stationId string, active bool);
+
+/* Classify incoming DMI events into severity 0 (None), 1 (Cat 1), 2 (Cat 2), or 3 (Cat 3) */
+from Stream[not(id is null) and not(stationId is null)]
+select
+    id,
+    parameterId,
+    stationId,
+    ifThenElse(
+        (parameterId == "wind_data" and mean_wind_speed >= 32.0) or
+        (parameterId == "cloudburst_data" and rain >= 35.0) or
+        (parameterId == "snow_data" and snow >= 28.0) or
+        (parameterId == "waterlevel_data" and waterlevel >= 450.0),
+        3,
+        ifThenElse(
+            (parameterId == "wind_data" and mean_wind_speed >= 25.0) or
+            (parameterId == "cloudburst_data" and rain >= 25.0) or
+            (parameterId == "snow_data" and snow >= 20.0) or
+            (parameterId == "waterlevel_data" and waterlevel >= 300.0),
+            2,
+            ifThenElse(
+                (parameterId == "wind_data" and mean_wind_speed >= 20.0) or
+                (parameterId == "cloudburst_data" and rain >= 15.0) or
+                (parameterId == "snow_data" and snow >= 15.0) or
+                (parameterId == "waterlevel_data" and waterlevel >= 150.0),
+                1,
+                0
+            )
+        )
+    ) as severity
+insert into EvaluatedSeverityStream;
+
+/* 1. Start Process_authority_warning when an inactive station hits Category 1, 2, or 3 */
+from EvaluatedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
+select id, parameterId, stationId, severity
+insert into AuthorityWarningInput;
+
+from EvaluatedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
+select stationId, true as active
+update or insert into ActiveWarningsTable
+    set ActiveWarningsTable.active = active
+    on ActiveWarningsTable.stationId == stationId;
+
+/* 2. Forward subsequent events (severity 1-3 updates or severity 0 dewarning) to active process */
+from EvaluatedSeverityStream[(stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable]
+select id, parameterId, stationId, severity
+insert into AuthorityWarningUpdateInput;
+
+/* 3. Remove station from ActiveWarningsTable once severity drops to 0 */
+from EvaluatedSeverityStream[severity == 0 and ((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
+delete ActiveWarningsTable
+    on ActiveWarningsTable.stationId == stationId;
+
+/* -----------------------------
    DMI EVENT ROUTING
    ----------------------------- */
 

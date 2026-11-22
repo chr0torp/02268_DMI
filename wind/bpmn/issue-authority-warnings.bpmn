@@ -65,11 +65,11 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=severity &gt;= 1 and severity != prev_severity</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_06ipoa9" name="Dewarning Criteria Met" sourceRef="Gateway_1fzu2nw" targetRef="Event_0d9rzj9">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=severity == 0</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=severity = 0</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_07n2719" sourceRef="StartEvent_1" targetRef="Gateway_16nd7gc" />
     <bpmn:sequenceFlow id="Flow_08k9idl" name="No" sourceRef="Gateway_16nd7gc" targetRef="Event_1m7522e">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=severity == 0</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=severity = 0</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1wg116t" sourceRef="Activity_1t9vf0d" targetRef="Event_05rye6w" />
     <bpmn:sequenceFlow id="Flow_1p9hq31" sourceRef="Event_05rye6w" targetRef="Gateway_1fzu2nw" />

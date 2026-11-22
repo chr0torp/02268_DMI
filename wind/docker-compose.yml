@@ -11,6 +11,7 @@ services:
       BPMN_FILE2: /bpmn/cloudburst.bpmn
       BPMN_FILE3: /bpmn/snow.bpmn
       BPMN_FILE4: /bpmn/waterlevel.bpmn
+      BPMN_FILE5: /bpmn/issue-authority-warnings.bpmn
     depends_on:
       - zeebe
       - siddhi
