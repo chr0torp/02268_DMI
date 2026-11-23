@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='utf-8'?>
+<log xes.version="2.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+  <extension name="concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+  <extension name="time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+  <extension name="org" prefix="org" uri="http://www.xes-standard.org/org.xesext" />
+  <global scope="trace">
+    <string key="concept:name" value="name" />
+  </global>
+  <global scope="event">
+    <string key="concept:name" value="name" />
+    <date key="time:timestamp" value="2024-01-01T00:00:00.000+00:00" />
+    <string key="org:resource" value="resource" />
+  </global>
+  <classifier name="Event Name" keys="concept:name" />
+  <trace>
+    <string key="concept:name" value="2111141" />
+    <event>
+      <string key="concept:name" value="Detect missing data" />
+      <string key="event_id" value="DetectMissing" />
+      <string key="role" value="CEP Monitor" />
+      <date key="time:timestamp" value="2026-11-23T19:42:44.734526+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06183" />
+      <string key="case_id" value="2111141" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'DetectMissing', 'FlagSuspect', 'RegisterFault']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Register fault ticket" />
+      <string key="event_id" value="RegisterFault" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:42:56.829408+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06183" />
+      <string key="case_id" value="2111141" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Take station out of service" />
+      <string key="event_id" value="OutOfService" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:42:57.055716+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06183" />
+      <string key="case_id" value="2111141" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'RegisterFault', 'Repair']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Repair instrument" />
+      <string key="event_id" value="Repair" />
+      <string key="role" value="Field Technician" />
+      <date key="time:timestamp" value="2026-11-23T19:42:57.249794+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06183" />
+      <string key="case_id" value="2111141" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Verify data" />
+      <string key="event_id" value="Verify" />
+      <string key="role" value="Climatologist" />
+      <date key="time:timestamp" value="2026-11-23T19:42:57.551203+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06183" />
+      <string key="case_id" value="2111141" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'Reactivate', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Reactivate station" />
+      <string key="event_id" value="Reactivate" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:42:57.891929+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06183" />
+      <string key="case_id" value="2111141" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'CloseTicket', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Close fault ticket" />
+      <string key="event_id" value="CloseTicket" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:42:58.192348+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06183" />
+      <string key="case_id" value="2111141" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'CloseTicket', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="2111142" />
+    <event>
+      <string key="concept:name" value="Flag suspect value" />
+      <string key="event_id" value="FlagSuspect" />
+      <string key="role" value="CEP Monitor" />
+      <date key="time:timestamp" value="2026-11-23T19:42:45.713081+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06180" />
+      <string key="case_id" value="2111142" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'DetectMissing', 'FlagSuspect', 'RegisterFault']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Register fault ticket" />
+      <string key="event_id" value="RegisterFault" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:03.111815+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06180" />
+      <string key="case_id" value="2111142" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Take station out of service" />
+      <string key="event_id" value="OutOfService" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:03.307113+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06180" />
+      <string key="case_id" value="2111142" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'RegisterFault', 'Repair']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Repair instrument" />
+      <string key="event_id" value="Repair" />
+      <string key="role" value="Field Technician" />
+      <date key="time:timestamp" value="2026-11-23T19:43:03.677734+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06180" />
+      <string key="case_id" value="2111142" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Verify data" />
+      <string key="event_id" value="Verify" />
+      <string key="role" value="Climatologist" />
+      <date key="time:timestamp" value="2026-11-23T19:43:03.942234+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06180" />
+      <string key="case_id" value="2111142" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'Reactivate', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Reactivate station" />
+      <string key="event_id" value="Reactivate" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:04.220091+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06180" />
+      <string key="case_id" value="2111142" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'CloseTicket', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Close fault ticket" />
+      <string key="event_id" value="CloseTicket" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:04.556378+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06180" />
+      <string key="case_id" value="2111142" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'CloseTicket', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+  </trace>
+  <trace>
+    <string key="concept:name" value="2111143" />
+    <event>
+      <string key="concept:name" value="Flag suspect value" />
+      <string key="event_id" value="FlagSuspect" />
+      <string key="role" value="CEP Monitor" />
+      <date key="time:timestamp" value="2026-11-23T19:42:50.909047+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06041" />
+      <string key="case_id" value="2111143" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'DetectMissing', 'FlagSuspect', 'RegisterFault']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Register fault ticket" />
+      <string key="event_id" value="RegisterFault" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:08.544460+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06041" />
+      <string key="case_id" value="2111143" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Take station out of service" />
+      <string key="event_id" value="OutOfService" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:08.894428+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06041" />
+      <string key="case_id" value="2111143" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'RegisterFault', 'Repair']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Repair instrument" />
+      <string key="event_id" value="Repair" />
+      <string key="role" value="Field Technician" />
+      <date key="time:timestamp" value="2026-11-23T19:43:09.306002+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06041" />
+      <string key="case_id" value="2111143" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Verify data" />
+      <string key="event_id" value="Verify" />
+      <string key="role" value="Climatologist" />
+      <date key="time:timestamp" value="2026-11-23T19:43:09.618481+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06041" />
+      <string key="case_id" value="2111143" />
+      <string key="payload:enabledEvents" value="['OutOfService', 'Reactivate', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Reactivate station" />
+      <string key="event_id" value="Reactivate" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:10.071739+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06041" />
+      <string key="case_id" value="2111143" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'CloseTicket', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+    <event>
+      <string key="concept:name" value="Close fault ticket" />
+      <string key="event_id" value="CloseTicket" />
+      <string key="role" value="IT Support" />
+      <date key="time:timestamp" value="2026-11-23T19:43:10.464167+00:00" />
+      <string key="org:resource" value="microservice" />
+      <string key="order_id" value="06041" />
+      <string key="case_id" value="2111143" />
+      <string key="payload:enabledEvents" value="['CEPAlarms', 'CloseTicket', 'DetectMissing', 'FlagSuspect', 'OutOfService', 'RegisterFault', 'Repair', 'Verify']" />
+      <string key="payload:status" value="success" />
+    </event>
+  </trace>
+</log>

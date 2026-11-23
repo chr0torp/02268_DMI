@@ -1,0 +1,204 @@
+@App:name("EquipmentApp")
+
+/* -----------------------------
+   INPUT STREAMS
+   ----------------------------- */
+
+/* Something happened at a station, e.g. {"stationId": "06183", "action": "RegisterFault"}
+   Used by do_step.py for the human steps */
+@source(
+    type='http',
+    receiver.url="http://0.0.0.0:7071/equipment",
+    @map(type='json')
+)
+define stream EquipmentStream(stationId string, action string);
+
+/* A weather reading, e.g. {"stationId": "06180", "parameterId": "temp_dry", "value": 2.1}
+   If "value" is left out, it becomes null (= missing) */
+@source(
+    type='http',
+    receiver.url="http://0.0.0.0:7073/weather",
+    @map(type='json', fail.on.missing.attribute='false')
+)
+define stream WeatherStream(stationId string, parameterId string, value double);
+
+/* The microservice reports back what the DCR graph did */
+@source(
+    type='http',
+    receiver.url="http://0.0.0.0:7072/middleman",
+    @map(type='json')
+)
+define stream MiddlemanStream(
+    stationId string,
+    case_id string,
+    event string,
+    timestamp string,
+    role string,
+    payload string,
+    error string
+);
+
+
+/* -----------------------------
+   TABLES
+   ----------------------------- */
+
+/* Which DCR case belongs to which station (one case per fault, from alarm to closed ticket) */
+define table StationCases(stationId string, case_id string);
+
+/* Stations that are taken out of service: Siddhi ignores their readings */
+define table OutOfServiceStations(stationId string);
+
+
+/* -----------------------------
+   OUTPUT STREAMS (to microservice)
+   ----------------------------- */
+
+/* Start a new case for a station and execute the first event */
+@sink(type='http',
+      publisher.url='http://microservice:5001/execute',
+      method='POST',
+      @map(type='json'))
+define stream NewCaseOut(stationId string, action string);
+
+/* Execute an event in the station's existing case */
+@sink(type='http',
+      publisher.url='http://microservice:5001/execute',
+      method='POST',
+      @map(type='json'))
+define stream ExistingCaseOut(stationId string, case_id string, action string);
+
+define stream ActiveWeatherStream(stationId string, parameterId string, value double);
+define stream StuckSensorStream(stationId string, readings long, highest double, lowest double);
+define stream AttemptStream(stationId string, case_id string, action string);
+define stream ErrorStream(stationId string, error string);
+
+
+/* -----------------------------
+   OUTPUT STREAMS (to logging)
+   ----------------------------- */
+
+@sink(type='http',
+      publisher.url='http://logging-service:5010/log',
+      method='POST',
+      @map(type='json'))
+define stream Logging(
+    event string,
+    case_id string,
+    order_id string,
+    timestamp string,
+    role string,
+    payload string,
+    error string
+);
+
+/* Problems are printed in the siddhi-runtime logs, NOT written to the XES log */
+@sink(type='log', prefix='EQUIPMENT PROBLEM')
+define stream ProblemLog(stationId string, case_id string, event string, error string);
+
+
+/* -----------------------------
+   DETECTION RULES (the CEP part)
+   ----------------------------- */
+
+/* Skip readings from stations that are out of service (PAIS -> CEP) */
+from WeatherStream[not((stationId == OutOfServiceStations.stationId) in OutOfServiceStations)]
+select stationId, parameterId, value
+insert into ActiveWeatherStream;
+
+/* Rule 1: no value at all -> the station is not sending data */
+from ActiveWeatherStream[value is null]
+select stationId, "DetectMissing" as action
+insert into EquipmentStream;
+
+/* Rule 2: impossible temperature (Danish records are about -31 and +36) */
+from ActiveWeatherStream[not(value is null) and (value > 50.0 or value < -40.0)]
+select stationId, "FlagSuspect" as action
+insert into EquipmentStream;
+
+/* Rule 3: the same value 5 times in a row -> the sensor is probably stuck.
+   "partition" makes Siddhi look at each station separately. */
+partition with (stationId of ActiveWeatherStream)
+begin
+    from ActiveWeatherStream[not(value is null)]#window.length(5)
+    select stationId, count() as readings, max(value) as highest, min(value) as lowest
+    having readings == 5 and highest == lowest
+    insert into StuckSensorStream;
+end;
+
+from StuckSensorStream
+select stationId, "FlagSuspect" as action
+insert into EquipmentStream;
+
+
+/* -----------------------------
+   ROUTING LOGIC
+   ----------------------------- */
+
+/* Look up whether the station already has a case */
+from EquipmentStream as E
+left outer join StationCases as S
+    on E.stationId == S.stationId
+select E.stationId, S.case_id, E.action
+insert into AttemptStream;
+
+/* An alarm for a station with no case starts a new case */
+from AttemptStream[case_id is null and (action == "DetectMissing" or action == "FlagSuspect")]
+select stationId, action
+insert into NewCaseOut;
+
+/* Anything for a station that has a case goes to that case */
+from AttemptStream[not(case_id is null)]
+select stationId, case_id, action
+insert into ExistingCaseOut;
+
+/* Human steps make no sense before the station has had an alarm */
+from AttemptStream[case_id is null and action != "DetectMissing" and action != "FlagSuspect"]
+select stationId, "This station has no case yet (no alarm has happened)" as error
+insert into ErrorStream;
+
+
+/* -----------------------------
+   MIDDLEMAN CALLBACKS
+   ----------------------------- */
+
+/* An alarm was accepted: remember the station's case */
+from MiddlemanStream[error == "" and (event == "DetectMissing" or event == "FlagSuspect")]
+select stationId, case_id
+update or insert into StationCases
+    on StationCases.stationId == stationId;
+
+/* The ticket was closed: the fault is over, so the next alarm starts a new case */
+from MiddlemanStream[error == "" and event == "CloseTicket"]
+delete StationCases
+    on StationCases.stationId == stationId;
+
+/* PAIS -> CEP: station taken out of service, so stop watching it */
+from MiddlemanStream[error == "" and event == "OutOfService"]
+select stationId
+update or insert into OutOfServiceStations
+    on OutOfServiceStations.stationId == stationId;
+
+/* PAIS -> CEP: station reactivated, so start watching it again */
+from MiddlemanStream[error == "" and event == "Reactivate"]
+delete OutOfServiceStations
+    on OutOfServiceStations.stationId == stationId;
+
+
+/* -----------------------------
+   LOGGING
+   ----------------------------- */
+
+/* Only events the DCR graph ACCEPTED go to the logging service (and the XES log) */
+from MiddlemanStream[error == ""]
+select event, case_id, stationId as order_id, timestamp, role, payload, error
+insert into Logging;
+
+/* Refused events and routing errors are only printed */
+from MiddlemanStream[not(error == "")]
+select stationId, case_id, event, error
+insert into ProblemLog;
+
+from ErrorStream
+select stationId, "" as case_id, "" as event, error
+insert into ProblemLog;

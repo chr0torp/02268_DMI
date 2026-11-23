@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcr:definitions xmlns:dcr="http://tk/schema/dcr" xmlns:dcrDi="http://tk/schema/dcrDi" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+  <dcr:dcrGraph id="dcrGraph">
+    <dcr:event id="RegisterFault" role="IT Support" description="Register fault ticket" included="true" executed="false" pending="false" enabled="false" />
+    <dcr:event id="Repair" role="Field Technician" description="Repair instrument" included="false" executed="false" pending="false" enabled="false" />
+    <dcr:event id="Verify" role="Climatologist" description="Verify data" included="false" executed="false" pending="false" enabled="false" />
+    <dcr:event id="CloseTicket" role="IT Support" description="Close fault ticket" included="false" executed="false" pending="false" enabled="false" />
+    <dcr:event id="OutOfService" role="IT Support" description="Take station out of service" included="true" executed="false" pending="false" enabled="false" />
+    <dcr:event id="Reactivate" role="IT Support" description="Reactivate station" included="false" executed="false" pending="false" enabled="false" />
+    <dcr:nesting id="CEPAlarms" role="CEP alarms" description="">
+      <dcr:event id="FlagSuspect" role="CEP Monitor" description="Flag suspect value" included="true" executed="false" pending="false" enabled="false" />
+      <dcr:event id="DetectMissing" role="CEP Monitor" description="Detect missing data" included="true" executed="false" pending="false" enabled="false" />
+    </dcr:nesting>
+    <dcr:relation id="Rel_1" type="response" sourceRef="CEPAlarms" targetRef="RegisterFault" />
+    <dcr:relation id="Rel_2" type="include" sourceRef="RegisterFault" targetRef="Repair" />
+    <dcr:relation id="Rel_3" type="include" sourceRef="RegisterFault" targetRef="CloseTicket" />
+    <dcr:relation id="Rel_4" type="condition" sourceRef="RegisterFault" targetRef="OutOfService" />
+    <dcr:relation id="Rel_5" type="exclude" sourceRef="OutOfService" targetRef="CEPAlarms" />
+    <dcr:relation id="Rel_6" type="include" sourceRef="OutOfService" targetRef="Reactivate" />
+    <dcr:relation id="Rel_7" type="response" sourceRef="OutOfService" targetRef="Reactivate" />
+    <dcr:relation id="Rel_8" type="include" sourceRef="Repair" targetRef="Verify" />
+    <dcr:relation id="Rel_9" type="response" sourceRef="Repair" targetRef="Verify" />
+    <dcr:relation id="Rel_10" type="condition" sourceRef="Repair" targetRef="CloseTicket" />
+    <dcr:relation id="Rel_11" type="condition" sourceRef="Repair" targetRef="Reactivate" />
+    <dcr:relation id="Rel_12" type="milestone" sourceRef="Verify" targetRef="CloseTicket" />
+    <dcr:relation id="Rel_13" type="milestone" sourceRef="Verify" targetRef="Reactivate" />
+    <dcr:relation id="Rel_14" type="include" sourceRef="Reactivate" targetRef="CEPAlarms" />
+    <dcr:relation id="Rel_15" type="exclude" sourceRef="Reactivate" targetRef="Reactivate" />
+    <dcr:relation id="Rel_16" type="milestone" sourceRef="Reactivate" targetRef="CloseTicket" />
+  </dcr:dcrGraph>
+  <dcrDi:dcrRootBoard id="RootBoard">
+    <dcrDi:dcrPlane id="Plane" boardElement="dcrGraph">
+      <dcrDi:relation id="Rel_1_di" boardElement="Rel_1">
+        <dcrDi:waypoint x="250" y="315" />
+        <dcrDi:waypoint x="380" y="315" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_2_di" boardElement="Rel_2">
+        <dcrDi:waypoint x="510" y="295" />
+        <dcrDi:waypoint x="640" y="295" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_3_di" boardElement="Rel_3">
+        <dcrDi:waypoint x="445" y="240" />
+        <dcrDi:waypoint x="445" y="170" />
+        <dcrDi:waypoint x="1225" y="170" />
+        <dcrDi:waypoint x="1225" y="240" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_4_di" boardElement="Rel_4">
+        <dcrDi:waypoint x="445" y="390" />
+        <dcrDi:waypoint x="445" y="560" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_5_di" boardElement="Rel_5">
+        <dcrDi:waypoint x="380" y="635" />
+        <dcrDi:waypoint x="155" y="635" />
+        <dcrDi:waypoint x="155" y="510" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_6_di" boardElement="Rel_6">
+        <dcrDi:waypoint x="510" y="620" />
+        <dcrDi:waypoint x="900" y="620" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_7_di" boardElement="Rel_7">
+        <dcrDi:waypoint x="510" y="660" />
+        <dcrDi:waypoint x="900" y="660" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_8_di" boardElement="Rel_8">
+        <dcrDi:waypoint x="770" y="295" />
+        <dcrDi:waypoint x="900" y="295" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_9_di" boardElement="Rel_9">
+        <dcrDi:waypoint x="770" y="340" />
+        <dcrDi:waypoint x="900" y="340" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_10_di" boardElement="Rel_10">
+        <dcrDi:waypoint x="690" y="240" />
+        <dcrDi:waypoint x="690" y="200" />
+        <dcrDi:waypoint x="1195" y="200" />
+        <dcrDi:waypoint x="1195" y="240" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_11_di" boardElement="Rel_11">
+        <dcrDi:waypoint x="705" y="390" />
+        <dcrDi:waypoint x="705" y="585" />
+        <dcrDi:waypoint x="900" y="585" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_12_di" boardElement="Rel_12">
+        <dcrDi:waypoint x="1030" y="315" />
+        <dcrDi:waypoint x="1160" y="315" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_13_di" boardElement="Rel_13">
+        <dcrDi:waypoint x="965" y="390" />
+        <dcrDi:waypoint x="965" y="560" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_14_di" boardElement="Rel_14">
+        <dcrDi:waypoint x="965" y="710" />
+        <dcrDi:waypoint x="965" y="770" />
+        <dcrDi:waypoint x="110" y="770" />
+        <dcrDi:waypoint x="110" y="510" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_15_di" boardElement="Rel_15">
+        <dcrDi:waypoint x="1030" y="690" />
+        <dcrDi:waypoint x="1070" y="690" />
+        <dcrDi:waypoint x="1070" y="745" />
+        <dcrDi:waypoint x="1000" y="745" />
+        <dcrDi:waypoint x="1000" y="710" />
+      </dcrDi:relation>
+      <dcrDi:relation id="Rel_16_di" boardElement="Rel_16">
+        <dcrDi:waypoint x="1030" y="600" />
+        <dcrDi:waypoint x="1225" y="600" />
+        <dcrDi:waypoint x="1225" y="390" />
+      </dcrDi:relation>
+      <dcrDi:dcrShape id="FlagSuspect_di" boardElement="FlagSuspect">
+        <dc:Bounds x="90" y="150" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="DetectMissing_di" boardElement="DetectMissing">
+        <dc:Bounds x="90" y="330" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="RegisterFault_di" boardElement="RegisterFault">
+        <dc:Bounds x="380" y="240" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="Repair_di" boardElement="Repair">
+        <dc:Bounds x="640" y="240" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="Verify_di" boardElement="Verify">
+        <dc:Bounds x="900" y="240" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="CloseTicket_di" boardElement="CloseTicket">
+        <dc:Bounds x="1160" y="240" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="OutOfService_di" boardElement="OutOfService">
+        <dc:Bounds x="380" y="560" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="Reactivate_di" boardElement="Reactivate">
+        <dc:Bounds x="900" y="560" width="130" height="150" />
+      </dcrDi:dcrShape>
+      <dcrDi:dcrShape id="CEPAlarms_di" boardElement="CEPAlarms">
+        <dc:Bounds x="60" y="100" width="190" height="410" />
+      </dcrDi:dcrShape>
+    </dcrDi:dcrPlane>
+  </dcrDi:dcrRootBoard>
+</dcr:definitions>
