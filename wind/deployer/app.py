@@ -38,10 +38,16 @@ def get_parameterId(data):
 def get_warning_level(data):
     return data.get("event", {}).get("warning_level") or data.get("warning_level")
 
+def get_station_id(data):
+    if not isinstance(data, dict):
+        return None
+    return data.get("event", {}).get("stationId") or data.get("stationId")
+
 def callback(id, event, payload=None, error=""):
     body = {
         "id": id,
         "parameterId": get_parameterId(payload),
+        "stationId": get_station_id(payload),
         "warning": get_warning_level(payload),
         "event": event,
         "timestamp": now_iso(),
@@ -230,7 +236,7 @@ async def notify_authority_dewarning(job: Job, id, parameterId, stationId, sever
     )
     return {"warning_level": "None"}
 
-async def warning_complete(job: Job, id, parameterId, warning_level="Unknown"):
+async def warning_complete(job: Job, id, parameterId, warning_level="Unknown", stationId=None):
     if parameterId == "wind_data":
         warning = "WindWarning"
     elif parameterId == "cloudburst_data":
@@ -246,7 +252,11 @@ async def warning_complete(job: Job, id, parameterId, warning_level="Unknown"):
         callback,
         id,
         warning,
-        payload={"parameterId": parameterId, "warning_level": warning_level},
+        payload={
+            "parameterId": parameterId, 
+            "warning_level": warning_level,
+            "stationId": stationId
+        },
     )
 
 
@@ -259,7 +269,7 @@ async def deploy_and_work():
             worker = ZeebeWorker(grpc_channel=channel)
             worker.task(
                 task_type="send-warning-internal",
-                variables_to_fetch=["id", "parameterId", "warning_level"],
+                variables_to_fetch=["id", "parameterId", "warning_level", "stationId"],
             )(warning_complete)
             worker.task(
                 task_type="notify-authority-warning",

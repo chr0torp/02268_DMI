@@ -20,6 +20,7 @@ define stream Stream(id string, parameterId string, mean_wind_speed float, wind_
 define stream MiddlemanStream(
     id string,
     parameterId string,
+    stationId string,
     warning string,
     event string,
     timestamp string,
@@ -42,7 +43,8 @@ define stream WindDataInput(
     id string,
     parameterId string,
     mean_wind_speed float,
-    wind_gust float
+    wind_gust float,
+    stationId string
 );
 
 @sink(
@@ -129,6 +131,7 @@ define stream RoutingError(
     error string
 );
 
+
 /* -----------------------------
    AUTHORITY WARNING SINKS & STATE
    ----------------------------- */
@@ -162,54 +165,67 @@ define stream AuthorityWarningUpdateInput(
 @primaryKey('stationId')
 define table ActiveWarningsTable(stationId string, active bool);
 
-/* Classify incoming DMI events into severity 0 (None), 1 (Cat 1), 2 (Cat 2), or 3 (Cat 3) */
-from Stream[not(id is null) and not(stationId is null)]
+/* 1. Map warning category from Camunda callbacks into severity 1, 2, or 3 */
+from MiddlemanStream[
+    not(stationId is null) and (
+        event == "WindWarning" or
+        event == "CloudburstWarning" or
+        event == "SnowWarning" or
+        event == "WaterLevelWarning"
+    )
+]
 select
     id,
     parameterId,
     stationId,
-    ifThenElse(
-        (parameterId == "wind_data" and mean_wind_speed >= 32.0) or
-        (parameterId == "cloudburst_data" and rain >= 35.0) or
-        (parameterId == "snow_data" and snow >= 28.0) or
-        (parameterId == "waterlevel_data" and waterlevel >= 450.0),
-        3,
-        ifThenElse(
-            (parameterId == "wind_data" and mean_wind_speed >= 25.0) or
-            (parameterId == "cloudburst_data" and rain >= 25.0) or
-            (parameterId == "snow_data" and snow >= 20.0) or
-            (parameterId == "waterlevel_data" and waterlevel >= 300.0),
-            2,
-            ifThenElse(
-                (parameterId == "wind_data" and mean_wind_speed >= 20.0) or
-                (parameterId == "cloudburst_data" and rain >= 15.0) or
-                (parameterId == "snow_data" and snow >= 15.0) or
-                (parameterId == "waterlevel_data" and waterlevel >= 150.0),
-                1,
-                0
-            )
+    ifThenElse(warning == "Category 3", 3,
+        ifThenElse(warning == "Category 2", 2,
+            ifThenElse(warning == "Category 1", 1, 0)
         )
     ) as severity
-insert into EvaluatedSeverityStream;
+insert into DerivedSeverityStream;
 
-/* 1. Start Process_authority_warning when an inactive station hits Category 1, 2, or 3 */
-from EvaluatedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
+/* 2. Emit severity = 0 if a received event finishes without issuing a warning within 2s */
+from every e1 = MiddlemanStream[
+    not(stationId is null) and (
+        event == "WindDataReceived" or
+        event == "CloudburstDataReceived" or
+        event == "SnowDataReceived" or
+        event == "WaterLevelDataReceived"
+    )
+] -> not MiddlemanStream[
+    id == e1.id and (
+        event == "WindWarning" or
+        event == "CloudburstWarning" or
+        event == "SnowWarning" or
+        event == "WaterLevelWarning"
+    )
+] for 2 sec
+select
+    e1.id as id,
+    e1.parameterId as parameterId,
+    e1.stationId as stationId,
+    0 as severity
+insert into DerivedSeverityStream;
+
+/* 3. Start Process_authority_warning if station is not active and severity >= 1 */
+from DerivedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
 select id, parameterId, stationId, severity
 insert into AuthorityWarningInput;
 
-from EvaluatedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
+/* 4. Update or dewarn active Process_authority_warning instance */
+from DerivedSeverityStream[(stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable]
+select id, parameterId, stationId, severity
+insert into AuthorityWarningUpdateInput;
+
+/* 5. Update ActiveWarningsTable state AFTER routing */
+from DerivedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
 select stationId, true as active
 update or insert into ActiveWarningsTable
     set ActiveWarningsTable.active = active
     on ActiveWarningsTable.stationId == stationId;
 
-/* 2. Forward subsequent events (severity 1-3 updates or severity 0 dewarning) to active process */
-from EvaluatedSeverityStream[(stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable]
-select id, parameterId, stationId, severity
-insert into AuthorityWarningUpdateInput;
-
-/* 3. Remove station from ActiveWarningsTable once severity drops to 0 */
-from EvaluatedSeverityStream[severity == 0 and ((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
+from DerivedSeverityStream[severity == 0 and ((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
 delete ActiveWarningsTable
     on ActiveWarningsTable.stationId == stationId;
 
@@ -222,7 +238,7 @@ select id, stationId, parameterId, mean_wind_speed, wind_gust, rain, snow, water
 insert into Logging;
 
 from Stream[parameterId == "wind_data" and not(id is null)]
-select id, parameterId, mean_wind_speed, wind_gust
+select id, parameterId, mean_wind_speed, wind_gust, stationId
 insert into WindDataInput;
 
 from Stream[parameterId == "cloudburst_data" and not(id is null)]
