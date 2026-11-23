@@ -165,7 +165,7 @@ define stream AuthorityWarningUpdateInput(
 @primaryKey('stationId')
 define table ActiveWarningsTable(stationId string, active bool);
 
-/* 1. Map warning category from Camunda callbacks into severity 1, 2, or 3 */
+/* Map warning category from Camunda callbacks into severity 1, 2, or 3 */
 from MiddlemanStream[
     not(stationId is null) and (
         event == "WindWarning" or
@@ -185,7 +185,7 @@ select
     ) as severity
 insert into DerivedSeverityStream;
 
-/* 2. Emit severity = 0 if a received event finishes without issuing a warning within 2s */
+/* Emit severity = 0 if a received event finishes without issuing a warning within 2s */
 from every e1 = MiddlemanStream[
     not(stationId is null) and (
         event == "WindDataReceived" or
@@ -208,17 +208,17 @@ select
     0 as severity
 insert into DerivedSeverityStream;
 
-/* 3. Start Process_authority_warning if station is not active and severity >= 1 */
+/* Start Process_authority_warning if station is not active and severity >= 1 */
 from DerivedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
 select id, parameterId, stationId, severity
 insert into AuthorityWarningInput;
 
-/* 4. Update or dewarn active Process_authority_warning instance */
+/* Update or dewarn active Process_authority_warning instance */
 from DerivedSeverityStream[(stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable]
 select id, parameterId, stationId, severity
 insert into AuthorityWarningUpdateInput;
 
-/* 5. Update ActiveWarningsTable state AFTER routing */
+/* Update ActiveWarningsTable state AFTER routing */
 from DerivedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
 select stationId, true as active
 update or insert into ActiveWarningsTable
