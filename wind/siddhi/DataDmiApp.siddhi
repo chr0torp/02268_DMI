@@ -185,29 +185,6 @@ select
     ) as severity
 insert into DerivedSeverityStream;
 
-/* Emit severity = 0 if a received event finishes without issuing a warning within 2s */
-from every e1 = MiddlemanStream[
-    not(stationId is null) and (
-        event == "WindDataReceived" or
-        event == "CloudburstDataReceived" or
-        event == "SnowDataReceived" or
-        event == "WaterLevelDataReceived"
-    )
-] -> not MiddlemanStream[
-    id == e1.id and (
-        event == "WindWarning" or
-        event == "CloudburstWarning" or
-        event == "SnowWarning" or
-        event == "WaterLevelWarning"
-    )
-] for 2 sec
-select
-    e1.id as id,
-    e1.parameterId as parameterId,
-    e1.stationId as stationId,
-    0 as severity
-insert into DerivedSeverityStream;
-
 /* Start Process_authority_warning if station is not active and severity >= 1 */
 from DerivedSeverityStream[severity >= 1 and not((stationId == ActiveWarningsTable.stationId) in ActiveWarningsTable)]
 select id, parameterId, stationId, severity

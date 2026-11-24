@@ -1,0 +1,259 @@
+[
+  {
+    "case_id": "cat0-w0",
+    "event": "api",
+    "timestamp": "2026-11-24T12:21:35.587743+00:00",
+    "error": "",
+    "payload": {
+      "id": "cat0-w0",
+      "parameterId": "wind_data",
+      "mean_wind_speed": 5.0,
+      "wind_gust": 7.0,
+      "stationId": "06183"
+    }
+  },
+  {
+    "case_id": "cat0-w0",
+    "event": "WindDataReceived",
+    "timestamp": "2026-11-24T12:21:35.583731+00:00",
+    "error": "",
+    "payload": {
+      "event": {
+        "id": "cat0-w0",
+        "parameterId": "wind_data",
+        "mean_wind_speed": 5.0,
+        "wind_gust": 7.0,
+        "stationId": "06183"
+      },
+      "id": "cat0-w0",
+      "parameterId": "wind_data"
+    }
+  },
+  {
+    "case_id": "cat0-w1",
+    "event": "api",
+    "timestamp": "2026-11-24T12:21:36.364038+00:00",
+    "error": "",
+    "payload": {
+      "id": "cat0-w1",
+      "parameterId": "wind_data",
+      "mean_wind_speed": 21.5,
+      "wind_gust": 26.3,
+      "stationId": "06183"
+    }
+  },
+  {
+    "case_id": "cat0-w2",
+    "event": "api",
+    "timestamp": "2026-11-24T12:21:36.601712+00:00",
+    "error": "",
+    "payload": {
+      "id": "cat0-w2",
+      "parameterId": "wind_data",
+      "mean_wind_speed": 33.5,
+      "wind_gust": 39.0,
+      "stationId": "06183"
+    }
+  },
+  {
+    "case_id": "cat0-w1",
+    "event": "WindDataReceived",
+    "timestamp": "2026-11-24T12:21:36.370351+00:00",
+    "error": "",
+    "payload": {
+      "event": {
+        "id": "cat0-w1",
+        "parameterId": "wind_data",
+        "mean_wind_speed": 21.5,
+        "wind_gust": 26.3,
+        "stationId": "06183"
+      },
+      "id": "cat0-w1",
+      "parameterId": "wind_data"
+    }
+  },
+  {
+    "case_id": "cat0-w0",
+    "event": "WindWarning",
+    "timestamp": "2026-11-24T12:21:36.422697+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "warning_level": "Category 0",
+      "stationId": "06183",
+      "id": "cat0-w0",
+      "warning": "Category 0"
+    }
+  },
+  {
+    "case_id": "cat0-w3",
+    "event": "api",
+    "timestamp": "2026-11-24T12:21:36.953142+00:00",
+    "error": "",
+    "payload": {
+      "id": "cat0-w3",
+      "parameterId": "wind_data",
+      "mean_wind_speed": 4.0,
+      "wind_gust": 6.0,
+      "stationId": "06183"
+    }
+  },
+  {
+    "case_id": "cat0-w2",
+    "event": "WindDataReceived",
+    "timestamp": "2026-11-24T12:21:36.643722+00:00",
+    "error": "",
+    "payload": {
+      "event": {
+        "id": "cat0-w2",
+        "parameterId": "wind_data",
+        "mean_wind_speed": 33.5,
+        "wind_gust": 39.0,
+        "stationId": "06183"
+      },
+      "id": "cat0-w2",
+      "parameterId": "wind_data"
+    }
+  },
+  {
+    "case_id": "cat0-w1",
+    "event": "WindWarning",
+    "timestamp": "2026-11-24T12:21:36.722063+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "warning_level": "Category 1",
+      "stationId": "06183",
+      "id": "cat0-w1",
+      "warning": "Category 1"
+    }
+  },
+  {
+    "case_id": "cat0-w3",
+    "event": "WindDataReceived",
+    "timestamp": "2026-11-24T12:21:36.933009+00:00",
+    "error": "",
+    "payload": {
+      "event": {
+        "id": "cat0-w3",
+        "parameterId": "wind_data",
+        "mean_wind_speed": 4.0,
+        "wind_gust": 6.0,
+        "stationId": "06183"
+      },
+      "id": "cat0-w3",
+      "parameterId": "wind_data"
+    }
+  },
+  {
+    "case_id": "cat0-w2",
+    "event": "WindWarning",
+    "timestamp": "2026-11-24T12:21:37.034595+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "warning_level": "Category 3",
+      "stationId": "06183",
+      "id": "cat0-w2",
+      "warning": "Category 3"
+    }
+  },
+  {
+    "case_id": "cat0-w1",
+    "event": "AuthorityWeatherEventReceived",
+    "timestamp": "2026-11-24T12:21:37.162946+00:00",
+    "error": "",
+    "payload": {
+      "id": "cat0-w1",
+      "parameterId": "wind_data",
+      "stationId": "06183",
+      "severity": 1,
+      "prev_severity": 1,
+      "warning_level": "Category 1",
+      "warning": "Category 1"
+    }
+  },
+  {
+    "case_id": "cat0-w3",
+    "event": "WindWarning",
+    "timestamp": "2026-11-24T12:21:37.264048+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "warning_level": "Category 0",
+      "stationId": "06183",
+      "id": "cat0-w3",
+      "warning": "Category 0"
+    }
+  },
+  {
+    "case_id": "cat0-w2",
+    "event": "AuthorityWeatherUpdateReceived",
+    "timestamp": "2026-11-24T12:21:37.417979+00:00",
+    "error": "",
+    "payload": {
+      "id": "cat0-w2",
+      "parameterId": "wind_data",
+      "stationId": "06183",
+      "severity": 3,
+      "warning_level": "Category 3",
+      "warning": "Category 3"
+    }
+  },
+  {
+    "case_id": "cat0-w1",
+    "event": "AuthorityWarningNotified",
+    "timestamp": "2026-11-24T12:21:37.611139+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "stationId": "06183",
+      "severity": 1,
+      "warning_level": "Category 1",
+      "id": "cat0-w1",
+      "warning": "Category 1"
+    }
+  },
+  {
+    "case_id": "cat0-w3",
+    "event": "AuthorityWeatherUpdateReceived",
+    "timestamp": "2026-11-24T12:21:37.724869+00:00",
+    "error": "",
+    "payload": {
+      "id": "cat0-w3",
+      "parameterId": "wind_data",
+      "stationId": "06183",
+      "severity": 0,
+      "warning_level": "None",
+      "warning": "None"
+    }
+  },
+  {
+    "case_id": "cat0-w2",
+    "event": "AuthorityWarningNotified",
+    "timestamp": "2026-11-24T12:21:37.912199+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "stationId": "06183",
+      "severity": 3,
+      "warning_level": "Category 3",
+      "id": "cat0-w2",
+      "warning": "Category 3"
+    }
+  },
+  {
+    "case_id": "cat0-w3",
+    "event": "AuthorityDewarningNotified",
+    "timestamp": "2026-11-24T12:21:38.059364+00:00",
+    "error": "",
+    "payload": {
+      "parameterId": "wind_data",
+      "stationId": "06183",
+      "severity": 0,
+      "warning_level": "None",
+      "id": "cat0-w3",
+      "warning": "None"
+    }
+  }
+]
