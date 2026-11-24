@@ -49,6 +49,13 @@ test_data_waterlevel = [{'id': 'water1111-1111-9d2d-34c4-111111111111', 'waterle
                         {'id': 'water1717-25149-747rhfhc88ee', 'waterlevel': 200.0, 'stationId': '25149', 'area': 'Vadehavet', 'parameterId': 'waterlevel_data'}
                         ]
 
+test_one = [{'id': 'ab5d26bf-7cd6-d557-bc9e-33619baaa0e3', 'parameterId': 'cloudburst_data', 'rain': 0.0, 'stationId': '06180'},
+            {'id': 'shfreiw2-a49e-73d9-c049-21a5badf3bcb', 'parameterId': 'wind_data', 'mean_wind_speed': 2.49, 'wind_gust': 2.3466, 'stationId': '06183'},
+            {'id': 'snow2222-7cd6-d557-bc9e-33619baaa0e3', 'parameterId': 'snow_data', 'snow': 1.0, 'stationId': '06180'},
+            {'id': 'water1111-1111-9d2d-34c4-111111111111', 'waterlevel': 27.0, 'stationId': '30357', 'area': 'Østersøen/indre farvande', 'parameterId': 'waterlevel_data'},
+            {'id': 'water6666-20101-747rhfhc88ee', 'waterlevel': 126.0, 'stationId': '20101', 'area': 'Skagerrak/Limfjorden', 'parameterId': 'waterlevel_data'},
+            {'id': 'water1010-25149-747rhfhc88ee', 'waterlevel': 174.0, 'stationId': '21009', 'area': 'Vestkysten', 'parameterId': 'waterlevel_data'},
+            {'id': 'water1717-25149-747rhfhc88ee', 'waterlevel': 200.0, 'stationId': '25149', 'area': 'Vadehavet', 'parameterId': 'waterlevel_data'}]
 
 test_data_all = test_data_wind + test_data_cloudburst + test_data_snow + test_data_waterlevel
 
@@ -94,6 +101,7 @@ def data_showof(data_list):
             timeout = 10
             status, response = send_event(url, data, timeout)
             print(f"Successfully HTTP {status} {response}")
+            time.sleep(1)
             if data.get("parameterId") == "waterlevel_data":
                 show_url = f"http://localhost:8081/operate/processes?process=Process_waterlevel&version=1&active=true&incidents=true&completed=true&canceled=true"
             elif data.get("parameterId") == "wind_data":
@@ -110,7 +118,6 @@ def data_showof(data_list):
         except (HTTPError, URLError, TimeoutError) as error:
             print(f"Error sending event: {error}")
             raise SystemExit(1)
-        time.sleep(1)
 
 
 
@@ -122,6 +129,8 @@ def main():
     # data_generator(test_data_waterlevel)
 
     data_showof(test_data_all)
+
+    # data_showof(test_one)
 
     
     

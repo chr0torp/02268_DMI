@@ -61,10 +61,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0ezk3f7" sourceRef="Activity_1e8fy68" targetRef="Gateway_0naw1or" />
     <bpmn:sequenceFlow id="Flow_0dttj2d" sourceRef="Activity_1o7wl3o" targetRef="Gateway_0naw1or" />
-    <bpmn:sequenceFlow id="Flow_1tvsb1g" sourceRef="Gateway_1eyepex" targetRef="Event_12clbw9" />
-    <bpmn:endEvent id="Event_12clbw9" name="no warning">
-      <bpmn:incoming>Flow_1tvsb1g</bpmn:incoming>
-    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1tvsb1g" sourceRef="Gateway_1eyepex" targetRef="Activity_0odw19z" />
     <bpmn:endEvent id="Event_0azvvwa" name="send warning internal">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="send-warning-internal" />
@@ -80,6 +77,21 @@
       <bpmn:incoming>Flow_1cgvc2q</bpmn:incoming>
       <bpmn:outgoing>Flow_0ezk3f7</bpmn:outgoing>
     </bpmn:scriptTask>
+    <bpmn:scriptTask id="Activity_0odw19z" name="Category 0">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=&#34;Category 0&#34;" resultVariable="warning_level" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tvsb1g</bpmn:incoming>
+      <bpmn:outgoing>Flow_039cjzs</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="Event_0t7kja7" name="send warning internal">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-warning-internal" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_039cjzs</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0foa6vy" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_039cjzs" sourceRef="Activity_0odw19z" targetRef="Event_0t7kja7" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0umjxu1">
@@ -114,12 +126,6 @@
         <dc:Bounds x="580" y="340" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_12clbw9_di" bpmnElement="Event_12clbw9">
-        <dc:Bounds x="602" y="492" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="593" y="535" width="54" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0azvvwa_di" bpmnElement="Event_0azvvwa">
         <dc:Bounds x="1152" y="362" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -129,6 +135,16 @@
       <bpmndi:BPMNShape id="BPMNShape_13r5b5v" bpmnElement="Activity_1e8fy68">
         <dc:Bounds x="880" y="430" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_04r386j" bpmnElement="Activity_0odw19z">
+        <dc:Bounds x="480" y="470" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1kucs0o" bpmnElement="Event_0t7kja7">
+        <dc:Bounds x="652" y="492" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="637" y="535" width="66" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1lriz6y_di" bpmnElement="Flow_1lriz6y">
         <di:waypoint x="258" y="380" />
@@ -178,11 +194,15 @@
       <bpmndi:BPMNEdge id="Flow_1tvsb1g_di" bpmnElement="Flow_1tvsb1g">
         <di:waypoint x="440" y="405" />
         <di:waypoint x="440" y="510" />
-        <di:waypoint x="602" y="510" />
+        <di:waypoint x="480" y="510" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pfj94p_di" bpmnElement="Flow_1pfj94p">
         <di:waypoint x="1095" y="380" />
         <di:waypoint x="1152" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_039cjzs_di" bpmnElement="Flow_039cjzs">
+        <di:waypoint x="580" y="510" />
+        <di:waypoint x="652" y="510" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
